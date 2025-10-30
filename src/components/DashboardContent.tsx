@@ -324,19 +324,22 @@ const DashboardContent: React.FC = () => {
         </div>
       </div>
 
-      {/* KPI Cards */}
-      <div className="row g-2 g-md-3 mb-4">
-        <div className="col-6 col-xl-3">
-          <div className="card stats-card h-100">
+      {/* KPI Cards - Estilo SB Admin 2 */}
+      <div className="row g-3 mb-4">
+        <div className="col-xl-3 col-md-6">
+          <div className="card border-left-brown shadow h-100 py-2" style={{ borderLeft: '0.25rem solid #8B4513' }}>
             <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center">
-                <div>
-                  <div className="text-muted small text-uppercase mb-1">Prendas Pedidas</div>
-                  <div className="h4 fw-bold mb-0">{kpis.total_pedidos.toLocaleString()}</div>
+              <div className="row no-gutters align-items-center">
+                <div className="col mr-2">
+                  <div className="text-xs font-weight-bold text-brown text-uppercase mb-1" style={{ fontSize: '0.7rem', fontWeight: 700, color: '#8B4513' }}>
+                    Prendas Pedidas
+                  </div>
+                  <div className="h5 mb-0 font-weight-bold text-gray-800" style={{ fontSize: '1.25rem', fontWeight: 700, color: '#5A5C69' }}>
+                    {kpis.total_pedidos.toLocaleString()}
+                  </div>
                 </div>
-                <div className="rounded-circle bg-gradient-brown d-flex align-items-center justify-content-center" 
-                     style={{ width: '48px', height: '48px' }}>
-                  <Package size={24} className="text-white" />
+                <div className="col-auto">
+                  <Package size={32} style={{ color: '#DDDFEB' }} />
                 </div>
               </div>
             </div>
@@ -344,16 +347,19 @@ const DashboardContent: React.FC = () => {
         </div>
 
         <div className="col-xl-3 col-md-6">
-          <div className="card stats-card-success h-100">
+          <div className="card border-left-success shadow h-100 py-2" style={{ borderLeft: '0.25rem solid #1CC88A' }}>
             <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center">
-                <div>
-                  <div className="text-muted small text-uppercase mb-1">Prendas a Recibir</div>
-                  <div className="h4 fw-bold mb-0 text-success">{kpis.total_recibidos.toLocaleString()}</div>
+              <div className="row no-gutters align-items-center">
+                <div className="col mr-2">
+                  <div className="text-xs font-weight-bold text-success text-uppercase mb-1" style={{ fontSize: '0.7rem', fontWeight: 700, color: '#1CC88A' }}>
+                    Prendas a Recibir
+                  </div>
+                  <div className="h5 mb-0 font-weight-bold text-gray-800" style={{ fontSize: '1.25rem', fontWeight: 700, color: '#5A5C69' }}>
+                    {kpis.total_recibidos.toLocaleString()}
+                  </div>
                 </div>
-                <div className="rounded-circle bg-success d-flex align-items-center justify-content-center" 
-                     style={{ width: '48px', height: '48px' }}>
-                  <Calendar size={24} className="text-white" />
+                <div className="col-auto">
+                  <Calendar size={32} style={{ color: '#DDDFEB' }} />
                 </div>
               </div>
             </div>
@@ -361,17 +367,20 @@ const DashboardContent: React.FC = () => {
         </div>
 
         <div className="col-xl-3 col-md-6">
-          <div className="card stats-card-danger h-100">
+          <div className="card border-left-danger shadow h-100 py-2" style={{ borderLeft: '0.25rem solid #E74A3B' }}>
             <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center">
-                <div>
-                  <div className="text-muted small text-uppercase mb-1">Pérdida Estimada</div>
-                  <div className="h4 fw-bold mb-0 text-danger">{kpis.perdida_estimada.toLocaleString()}</div>
+              <div className="row no-gutters align-items-center">
+                <div className="col mr-2">
+                  <div className="text-xs font-weight-bold text-danger text-uppercase mb-1" style={{ fontSize: '0.7rem', fontWeight: 700, color: '#E74A3B' }}>
+                    Pérdida Estimada
+                  </div>
+                  <div className="h5 mb-0 font-weight-bold text-gray-800" style={{ fontSize: '1.25rem', fontWeight: 700, color: '#5A5C69' }}>
+                    {kpis.perdida_estimada.toLocaleString()}
+                  </div>
                   <small className="text-muted">({kpis.avg_loss_pct}%)</small>
                 </div>
-                <div className="rounded-circle bg-danger d-flex align-items-center justify-content-center" 
-                     style={{ width: '48px', height: '48px' }}>
-                  <TrendingDown size={24} className="text-white" />
+                <div className="col-auto">
+                  <TrendingDown size={32} style={{ color: '#DDDFEB' }} />
                 </div>
               </div>
             </div>
@@ -379,17 +388,20 @@ const DashboardContent: React.FC = () => {
         </div>
 
         <div className="col-xl-3 col-md-6">
-          <div className="card stats-card-info h-100">
+          <div className="card border-left-info shadow h-100 py-2" style={{ borderLeft: '0.25rem solid #36B9CC' }}>
             <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center">
-                <div>
-                  <div className="text-muted small text-uppercase mb-1">Fábricas</div>
-                  <div className="h4 fw-bold mb-0">{kpis.total_fabricas}</div>
+              <div className="row no-gutters align-items-center">
+                <div className="col mr-2">
+                  <div className="text-xs font-weight-bold text-info text-uppercase mb-1" style={{ fontSize: '0.7rem', fontWeight: 700, color: '#36B9CC' }}>
+                    Fábricas
+                  </div>
+                  <div className="h5 mb-0 font-weight-bold text-gray-800" style={{ fontSize: '1.25rem', fontWeight: 700, color: '#5A5C69' }}>
+                    {kpis.total_fabricas}
+                  </div>
                   <small className="text-muted">{kpis.total_sacos} sacos</small>
                 </div>
-                <div className="rounded-circle bg-info d-flex align-items-center justify-content-center" 
-                     style={{ width: '48px', height: '48px' }}>
-                  <Factory size={24} className="text-white" />
+                <div className="col-auto">
+                  <Factory size={32} style={{ color: '#DDDFEB' }} />
                 </div>
               </div>
             </div>
@@ -397,20 +409,18 @@ const DashboardContent: React.FC = () => {
         </div>
       </div>
 
-      {/* Charts Row */}
-      <div className="row g-3 g-md-4 mb-4">
+      {/* Charts Row - Estilo SB Admin 2 */}
+      <div className="row g-3 mb-4">
         {/* Line Chart - Evolución */}
         <div className="col-12 col-xl-8">
-          <div className="card h-100">
-            <div className="card-header bg-white border-0 py-2 py-md-3">
-              <h5 className="card-title mb-0 fw-bold fs-6 fs-md-5">
-                <TrendingDown size={20} className="me-2 text-brown" />
+          <div className="card shadow h-100">
+            <div className="card-header py-3" style={{ backgroundColor: '#F8F9FC', borderBottom: '1px solid #E3E6F0' }}>
+              <h6 className="m-0 font-weight-bold" style={{ color: '#8B4513', fontSize: '1rem', fontWeight: 700 }}>
+                <TrendingDown size={18} className="me-2" style={{ verticalAlign: 'middle' }} />
                 Evolución: Pedidos vs Recibidos
-              </h5>
-              <p className="text-muted small mb-0 d-none d-md-block">Contraste entre prendas pedidas y esperadas a recibir</p>
+              </h6>
             </div>
-            <div className="card-body p-2 p-md-3">
-              {lossOverTime.length > 0 ? (
+            <div className="card-body">{lossOverTime.length > 0 ? (
                 <ResponsiveContainer width="100%" height={300}>
                   <LineChart data={lossOverTime} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e9ecef" />
@@ -467,13 +477,12 @@ const DashboardContent: React.FC = () => {
 
         {/* Bar Chart - Top pérdidas */}
         <div className="col-12 col-xl-4">
-          <div className="card h-100">
-            <div className="card-header bg-white border-0 py-2 py-md-3">
-              <h5 className="card-title mb-0 fw-bold fs-6 fs-md-5">
-                <AlertTriangle size={20} className="me-2 text-danger" />
+          <div className="card shadow h-100">
+            <div className="card-header py-3" style={{ backgroundColor: '#F8F9FC', borderBottom: '1px solid #E3E6F0' }}>
+              <h6 className="m-0 font-weight-bold" style={{ color: '#E74A3B', fontSize: '1rem', fontWeight: 700 }}>
+                <AlertTriangle size={18} className="me-2" style={{ verticalAlign: 'middle' }} />
                 Top 10 Pérdidas
-              </h5>
-              <p className="text-muted small mb-0 d-none d-md-block">Fábricas con mayor % pérdida</p>
+              </h6>
             </div>
             <div className="card-body p-2 p-md-3">
               {topLosses.length > 0 ? (
@@ -524,21 +533,20 @@ const DashboardContent: React.FC = () => {
         </div>
       </div>
 
-      {/* Priority Sacks Table */}
+      {/* Priority Sacks Table - Estilo SB Admin 2 */}
       <div className="row">
         <div className="col-12">
-          <div className="card">
-            <div className="card-header bg-white border-0 py-3">
-              <h5 className="card-title mb-0 fw-bold">
-                <AlertTriangle size={20} className="me-2 text-warning" />
+          <div className="card shadow mb-4">
+            <div className="card-header py-3" style={{ backgroundColor: '#F8F9FC', borderBottom: '1px solid #E3E6F0' }}>
+              <h6 className="m-0 font-weight-bold" style={{ color: '#F6C23E', fontSize: '1rem', fontWeight: 700 }}>
+                <AlertTriangle size={18} className="me-2" style={{ verticalAlign: 'middle' }} />
                 Códigos de Sacos a Pesar con Prioridad (Pérdida &gt; 5%)
-              </h5>
-              <p className="text-muted small mb-0">Sacos que requieren inspección prioritaria por alto índice de riesgo</p>
+              </h6>
             </div>
-            <div className="card-body p-0">
+            <div className="card-body p-0">{/* Tabla */}
               <div className="table-responsive">
                 <table className="table table-hover mb-0">
-                  <thead className="bg-light">
+                  <thead style={{ backgroundColor: '#F8F9FC' }}>
                     <tr>
                       <th>Código Saco</th>
                       <th>Fábrica</th>

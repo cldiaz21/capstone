@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { supabase } from './lib/supabase';
 import type { Session } from '@supabase/supabase-js';
-import Navbar from './components/Navbar';
-import Sidebar from './components/Sidebar';
+import NavbarSB from './components/NavbarSB';
+import SidebarSB from './components/SidebarSB';
 import DashboardContent from './components/DashboardContent';
 import Login from './components/Login';
 import AdminCreateUser from './components/AdminCreateUser';
-import './argon-theme.css';
+import './sb-admin-theme.css';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -14,13 +14,13 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Aplicar clases de Argon al body
-    document.body.classList.add('g-sidenav-show');
-    document.body.style.backgroundColor = '#ffffff';
+    // Aplicar estilos de SB Admin 2 al body
+    document.body.style.backgroundColor = '#F8F9FA';
+    document.body.style.fontFamily = '"Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
     
     return () => {
-      document.body.classList.remove('g-sidenav-show');
       document.body.style.backgroundColor = '';
+      document.body.style.fontFamily = '';
     };
   }, []);
 
@@ -63,14 +63,14 @@ function App() {
 
   return (
     <>
-      <Sidebar 
+      <SidebarSB 
         activeTab={activeTab} 
         setActiveTab={setActiveTab}
         onLogout={handleLogout}
         userEmail={session.user?.email}
       />
-      <main className="main-content position-relative border-radius-lg">
-        <Navbar onLogout={handleLogout} userEmail={session.user?.email} />
+      <main className="main-content position-relative border-radius-lg" style={{ marginLeft: '14rem' }}>
+        <NavbarSB onLogout={handleLogout} userEmail={session.user?.email} />
         <div className="container-fluid py-4">
           {activeTab === 'dashboard' && <DashboardContent />}
           {activeTab === 'factories' && (
