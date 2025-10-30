@@ -51,50 +51,50 @@ function App() {
   }
 
   return (
-    <div className="app">
-      <Navbar onLogout={handleLogout} userEmail={session.user?.email} />
-      <div className="d-flex">
-        <Sidebar 
-          activeTab={activeTab} 
-          setActiveTab={setActiveTab}
-          onLogout={handleLogout}
-          userEmail={session.user?.email}
-        />
-        <main className="main-content flex-grow-1" style={{ marginLeft: '0px' }}>
+    <body className="g-sidenav-show bg-gray-100">
+      <Sidebar 
+        activeTab={activeTab} 
+        setActiveTab={setActiveTab}
+        onLogout={handleLogout}
+        userEmail={session.user?.email}
+      />
+      <main className="main-content position-relative border-radius-lg">
+        <Navbar onLogout={handleLogout} userEmail={session.user?.email} />
+        <div className="container-fluid py-4">
           {activeTab === 'dashboard' && <DashboardContent />}
           {activeTab === 'factories' && (
-            <div className="container-fluid px-4 py-4">
+            <>
               <h1 className="h3 fw-bold mb-4">Fábricas</h1>
               <p className="text-muted">Contenido de fábricas en desarrollo...</p>
-            </div>
+            </>
           )}
           {activeTab === 'sacks' && (
-            <div className="container-fluid px-4 py-4">
+            <>
               <h1 className="h3 fw-bold mb-4">Sacos</h1>
               <p className="text-muted">Contenido de sacos en desarrollo...</p>
-            </div>
+            </>
           )}
           {activeTab === 'losses' && (
-            <div className="container-fluid px-4 py-4">
+            <>
               <h1 className="h3 fw-bold mb-4">Pérdidas</h1>
               <p className="text-muted">Análisis detallado de pérdidas en desarrollo...</p>
-            </div>
+            </>
           )}
           {activeTab === 'reports' && (
-            <div className="container-fluid px-4 py-4">
+            <>
               <h1 className="h3 fw-bold mb-4">Reportes</h1>
               <p className="text-muted">Sistema de reportes en desarrollo...</p>
-            </div>
+            </>
           )}
           {activeTab === 'settings' && (
-            <div className="container-fluid px-4 py-4">
+            <>
               <h1 className="h3 fw-bold mb-4">Configuración</h1>
               <AdminCreateUser />
-            </div>
+            </>
           )}
-        </main>
-      </div>
-    </div>
+        </div>
+      </main>
+    </body>
   );
 }
 

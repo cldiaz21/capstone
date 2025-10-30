@@ -10,6 +10,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout, userEmail }) => {
   const [isOpen, setIsOpen] = useState(false);
+  
   const menuItems = [
     { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard', active: true },
     { id: 'factories', icon: Factory, label: 'Fábricas' },
@@ -21,14 +22,14 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout, us
 
   const handleItemClick = (id: string) => {
     setActiveTab(id);
-    setIsOpen(false); // Cerrar menú en mobile después de seleccionar
+    setIsOpen(false);
   };
 
   return (
     <>
-      {/* Botón hamburguesa SOLO para mobile */}
+      {/* Mobile menu button */}
       <button
-        className="btn btn-brown d-lg-none position-fixed"
+        className="btn btn-brown d-xl-none position-fixed"
         onClick={() => setIsOpen(!isOpen)}
         style={{
           bottom: '20px',
@@ -39,14 +40,15 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout, us
           height: '56px',
           boxShadow: '0 4px 12px rgba(139, 69, 19, 0.3)'
         }}
+        aria-label="Toggle navigation"
       >
         {isOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
-      {/* Overlay SOLO en mobile cuando está abierto */}
+      {/* Overlay for mobile */}
       {isOpen && (
         <div
-          className="d-lg-none position-fixed top-0 start-0 w-100 h-100"
+          className="d-xl-none position-fixed top-0 start-0 w-100 h-100"
           style={{
             backgroundColor: 'rgba(0,0,0,0.5)',
             zIndex: 1040
@@ -55,106 +57,89 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout, us
         />
       )}
 
-      {/* Sidebar único */}
-      <div
-        className={`bg-white border-end ${isOpen ? 'd-block' : 'd-none'} d-lg-block`}
+      {/* Sidebar - Argon Style */}
+      <aside
+        className={`sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 ${
+          isOpen ? '' : 'd-none d-xl-block'
+        }`}
+        id="sidenav-main"
         style={{
-          width: '260px',
-          minHeight: '100vh',
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          zIndex: isOpen ? 1045 : 'auto',
-          overflowY: 'auto'
+          zIndex: isOpen ? 1045 : 1020
         }}
       >
-        <div className="p-3">
-          {/* Logo en mobile */}
-          <div className="d-lg-none mb-4 text-center">
+        <div className="sidenav-header">
+          <i
+            className="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
+            aria-hidden="true"
+            id="iconSidenav"
+            onClick={() => setIsOpen(false)}
+          ></i>
+          <a className="navbar-brand m-0" href="#">
             <img
               src="/assets/logo.png"
+              width="26px"
+              height="26px"
+              className="navbar-brand-img h-100"
               alt="Logo"
-              style={{
-                height: '50px',
-                backgroundColor: 'rgba(255,255,255,0.9)',
-                padding: '8px',
-                borderRadius: '8px'
-              }}
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.style.display = 'none';
               }}
             />
-          </div>
-
-          {/* Info de usuario en mobile */}
-          <div className="d-lg-none mb-3 pb-3 border-bottom">
-            <div className="d-flex align-items-center">
-              <div className="rounded-circle bg-gradient-brown text-white d-flex align-items-center justify-content-center me-2"
-                   style={{ width: '40px', height: '40px' }}>
-                <span className="fw-bold">{userEmail?.[0]?.toUpperCase() || 'A'}</span>
-              </div>
-              <div className="flex-grow-1">
-                <div className="fw-medium text-dark" style={{ fontSize: '0.9rem' }}>
-                  {userEmail || 'Admin'}
-                </div>
-                <div className="text-muted" style={{ fontSize: '0.75rem' }}>
-                  Administrador
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <h6 className="text-uppercase text-muted fw-bold mb-3" style={{ fontSize: '0.75rem', letterSpacing: '0.5px' }}>
-            Navegación
-          </h6>
-          <ul className="nav flex-column">
+            <span className="ms-1 font-weight-bold">Comercial Marisol</span>
+          </a>
+        </div>
+        <hr className="horizontal dark mt-0" />
+        <div className="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
+          <ul className="navbar-nav">
             {menuItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
               return (
-                <li className="nav-item mb-1" key={item.id}>
+                <li className="nav-item" key={item.id}>
                   <a
+                    className={`nav-link ${isActive ? 'active' : ''}`}
                     href="#"
                     onClick={(e) => {
                       e.preventDefault();
                       handleItemClick(item.id);
                     }}
-                    className={`nav-link d-flex align-items-center rounded ${
-                      isActive 
-                        ? 'bg-gradient-brown text-white' 
-                        : 'text-dark hover-bg-light'
-                    }`}
-                    style={{ 
-                      padding: '0.75rem 1rem',
-                      transition: 'all 0.2s'
-                    }}
                   >
-                    <Icon size={18} className="me-3" />
-                    <span className="fw-medium">{item.label}</span>
+                    <div className="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                      <Icon size={14} className={isActive ? 'text-white' : 'text-dark'} style={{ opacity: 0.9 }} />
+                    </div>
+                    <span className="nav-link-text ms-1">{item.label}</span>
                   </a>
                 </li>
               );
             })}
           </ul>
-
-          {/* Botón de cerrar sesión - SIEMPRE visible */}
-          {onLogout && (
-            <div className="mt-4 pt-3 border-top">
-              <button
-                onClick={() => {
-                  onLogout();
-                  setIsOpen(false);
-                }}
-                className="btn btn-outline-brown w-100 d-flex align-items-center justify-content-center"
-              >
-                <LogOut size={18} className="me-2" />
-                Cerrar sesión
-              </button>
+        </div>
+        
+        {/* Sidenav Footer */}
+        <div className="sidenav-footer mx-3">
+          <div className="card card-plain shadow-none" id="sidenavCard">
+            <div className="card-body text-center p-3 w-100 pt-0">
+              <div className="docs-info">
+                <h6 className="mb-1">{userEmail}</h6>
+                <p className="text-xs font-weight-bold mb-0">Administrador</p>
+              </div>
             </div>
+          </div>
+          {onLogout && (
+            <button
+              className="btn btn-outline-brown btn-sm w-100 mb-3"
+              onClick={() => {
+                onLogout();
+                setIsOpen(false);
+              }}
+            >
+              <LogOut size={14} className="me-1" />
+              Cerrar Sesión
+            </button>
           )}
         </div>
-      </div>
+      </aside>
     </>
   );
 };

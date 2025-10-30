@@ -8,100 +8,77 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ onLogout, userEmail }) => {
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-gradient-brown position-sticky top-0" style={{ zIndex: 1000 }}>
-      <div className="container-fluid px-4">
-        <a className="navbar-brand d-flex align-items-center" href="#">
-          <img 
-            src="/assets/logo.png" 
-            alt="Logo Comercial Marisol" 
-            height="60" 
-            className="me-2"
-            style={{ 
-              filter: 'drop-shadow(0 2px 4px rgba(255, 255, 255, 0.8))',
-              backgroundColor: 'rgba(255, 255, 255, 0.9)',
-              padding: '8px',
-              borderRadius: '8px'
-            }}
-            onError={(e) => {
-              // Fallback to SVG if PNG doesn't exist
-              const target = e.target as HTMLImageElement;
-              target.src = '/assets/logo.svg';
-              target.onerror = () => {
-                // Hide if neither exists
-                target.style.display = 'none';
-              };
-            }}
-          />
-        </a>
-        
-        <button 
-          className="navbar-toggler" 
-          type="button" 
-          data-bs-toggle="collapse" 
-          data-bs-target="#navbarNav"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <form className="d-flex mx-auto" style={{ maxWidth: '400px', width: '100%' }}>
+    <nav className="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" data-scroll="false">
+      <div className="container-fluid py-1 px-3">
+        <nav aria-label="breadcrumb">
+          <ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+            <li className="breadcrumb-item text-sm">
+              <a className="opacity-5 text-dark" href="#">Dashboard</a>
+            </li>
+            <li className="breadcrumb-item text-sm text-dark active" aria-current="page">
+              Control de Pérdidas
+            </li>
+          </ol>
+          <h6 className="font-weight-bolder mb-0">Dashboard</h6>
+        </nav>
+        <div className="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+          <div className="ms-md-auto pe-md-3 d-flex align-items-center">
             <div className="input-group">
-              <span className="input-group-text bg-white border-end-0">
-                <Search size={18} className="text-muted" />
+              <span className="input-group-text text-body">
+                <Search size={16} />
               </span>
-              <input 
-                className="form-control border-start-0" 
-                type="search" 
-                placeholder="Buscar fábrica, código..." 
-              />
+              <input type="text" className="form-control" placeholder="Buscar..." />
             </div>
-          </form>
-          
-          <ul className="navbar-nav ms-auto">
-            <li className="nav-item dropdown">
+          </div>
+          <ul className="navbar-nav justify-content-end">
+            <li className="nav-item dropdown pe-2 d-flex align-items-center">
               <a 
-                className="nav-link position-relative" 
                 href="#" 
-                role="button" 
-                data-bs-toggle="dropdown"
+                className="nav-link text-body p-0 position-relative" 
+                id="dropdownMenuButton" 
+                data-bs-toggle="dropdown" 
+                aria-expanded="false"
               >
-                <Bell size={20} />
-                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                <Bell size={16} />
+                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={{ fontSize: '0.65rem' }}>
                   3
                 </span>
               </a>
-              <ul className="dropdown-menu dropdown-menu-end">
-                <li><a className="dropdown-item" href="#">Nueva alerta de pérdida</a></li>
-                <li><a className="dropdown-item" href="#">Saco flagged</a></li>
-                <li><a className="dropdown-item" href="#">Reporte mensual disponible</a></li>
+              <ul className="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
+                <li className="mb-2">
+                  <a className="dropdown-item border-radius-md" href="#">
+                    <div className="d-flex py-1">
+                      <div className="my-auto">
+                        <div className="h6 text-sm font-weight-normal mb-1">
+                          <span className="font-weight-bold">Nueva alerta</span> de pérdida
+                        </div>
+                        <p className="text-xs text-secondary mb-0">
+                          <i className="fa fa-clock me-1"></i>
+                          Hace 13 minutos
+                        </p>
+                      </div>
+                    </div>
+                  </a>
+                </li>
               </ul>
             </li>
-            
-            <li className="nav-item dropdown">
+            <li className="nav-item d-flex align-items-center">
               <a 
-                className="nav-link d-flex align-items-center" 
                 href="#" 
-                role="button" 
+                className="nav-link text-body font-weight-bold px-0 d-flex align-items-center"
                 data-bs-toggle="dropdown"
               >
-                <div className="rounded-circle bg-white text-brown d-flex align-items-center justify-content-center" 
-                     style={{ width: '32px', height: '32px' }}>
-                  <User size={18} />
-                </div>
-                <span className="ms-2 d-none d-lg-inline">{userEmail || 'Admin'}</span>
+                <User size={16} className="me-sm-1" />
+                <span className="d-sm-inline d-none">{userEmail || 'Admin'}</span>
               </a>
               <ul className="dropdown-menu dropdown-menu-end">
-                <li><h6 className="dropdown-header">{userEmail || 'admin@example.com'}</h6></li>
+                <li><h6 className="dropdown-header">{userEmail}</h6></li>
                 <li><hr className="dropdown-divider" /></li>
                 {onLogout && (
                   <li>
-                    <button 
-                      className="dropdown-item d-flex align-items-center" 
-                      onClick={onLogout}
-                      style={{ cursor: 'pointer' }}
-                    >
+                    <button className="dropdown-item d-flex align-items-center" onClick={onLogout}>
                       <LogOut size={16} className="me-2" />
-                      Cerrar sesión
+                      Cerrar Sesión
                     </button>
                   </li>
                 )}
