@@ -14,6 +14,15 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Aplicar clases de Argon al body
+    document.body.classList.add('g-sidenav-show', 'bg-gray-100');
+    
+    return () => {
+      document.body.classList.remove('g-sidenav-show', 'bg-gray-100');
+    };
+  }, []);
+
+  useEffect(() => {
     // Verificar sesión actual
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -51,7 +60,7 @@ function App() {
   }
 
   return (
-    <body className="g-sidenav-show bg-gray-100">
+    <>
       <Sidebar 
         activeTab={activeTab} 
         setActiveTab={setActiveTab}
@@ -94,7 +103,7 @@ function App() {
           )}
         </div>
       </main>
-    </body>
+    </>
   );
 }
 
