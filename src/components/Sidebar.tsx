@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, Factory, Package, TrendingDown, FileText, Settings, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Factory, Package, TrendingDown, FileText, Settings, LogOut, Menu, X } from 'lucide-react';
 
 interface SidebarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  onLogout?: () => void;
+  userEmail?: string;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
+const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout, userEmail }) => {
   const [isOpen, setIsOpen] = useState(false);
   
   const menuItems = [
@@ -119,11 +121,23 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
           <div className="card card-plain shadow-none" id="sidenavCard">
             <div className="card-body text-center p-3 w-100 pt-0">
               <div className="docs-info">
-                <h6 className="mb-1">Comercial Marisol</h6>
-                <p className="text-xs font-weight-bold mb-0">Control de Pérdidas</p>
+                <h6 className="mb-1">{userEmail}</h6>
+                <p className="text-xs font-weight-bold mb-0">Administrador</p>
               </div>
             </div>
           </div>
+          {onLogout && (
+            <button
+              className="btn btn-outline-brown btn-sm w-100 mb-3"
+              onClick={() => {
+                onLogout();
+                setIsOpen(false);
+              }}
+            >
+              <LogOut size={14} className="me-1" />
+              Cerrar Sesión
+            </button>
+          )}
         </div>
       </aside>
     </>
