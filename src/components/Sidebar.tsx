@@ -26,7 +26,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout, us
 
   return (
     <>
-      {/* Botón hamburguesa para mobile */}
+      {/* Botón hamburguesa SOLO para mobile */}
       <button
         className="btn btn-brown d-lg-none position-fixed"
         onClick={() => setIsOpen(!isOpen)}
@@ -43,10 +43,10 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout, us
         {isOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
-      {/* Overlay para mobile */}
+      {/* Overlay SOLO en mobile cuando está abierto */}
       {isOpen && (
         <div
-          className="position-fixed top-0 start-0 w-100 h-100 d-lg-none"
+          className="d-lg-none position-fixed top-0 start-0 w-100 h-100"
           style={{
             backgroundColor: 'rgba(0,0,0,0.5)',
             zIndex: 1040
@@ -55,18 +55,16 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout, us
         />
       )}
 
-      {/* Sidebar unificado */}
+      {/* Sidebar único */}
       <div
-        className={`bg-white border-end ${isOpen ? 'd-block' : 'd-none d-lg-block'}`}
+        className={`bg-white border-end ${isOpen ? 'd-block' : 'd-none'} d-lg-block`}
         style={{
           width: '260px',
           minHeight: '100vh',
-          position: isOpen ? 'fixed' : 'relative',
+          position: 'fixed',
           top: 0,
           left: 0,
-          zIndex: 1045,
-          transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
-          transition: 'transform 0.3s ease-in-out',
+          zIndex: isOpen ? 1045 : 'auto',
           overflowY: 'auto'
         }}
       >
@@ -140,9 +138,9 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout, us
             })}
           </ul>
 
-          {/* Botón de cerrar sesión (visible siempre en mobile, en desktop en el navbar) */}
+          {/* Botón de cerrar sesión - SIEMPRE visible */}
           {onLogout && (
-            <div className="d-lg-none mt-4 pt-3 border-top">
+            <div className="mt-4 pt-3 border-top">
               <button
                 onClick={() => {
                   onLogout();

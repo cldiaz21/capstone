@@ -60,7 +60,7 @@ function App() {
           onLogout={handleLogout}
           userEmail={session.user?.email}
         />
-        <main className="main-content flex-grow-1">
+        <main className="main-content flex-grow-1" style={{ marginLeft: '0px' }}>
           {activeTab === 'dashboard' && <DashboardContent />}
           {activeTab === 'factories' && (
             <div className="container-fluid px-4 py-4">
