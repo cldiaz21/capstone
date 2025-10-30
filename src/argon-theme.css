@@ -234,15 +234,11 @@ body {
 
 /* Responsive Styles */
 @media (max-width: 991.98px) {
-  /* Ocultar sidebar de escritorio en mobile */
-  .sidebar {
-    display: block !important;
-  }
-  
   /* Main content ocupa todo el ancho en mobile */
   .main-content {
     width: 100% !important;
     padding: 1rem !important;
+    margin-left: 0 !important;
   }
   
   /* Navbar más compacto en mobile */
@@ -273,6 +269,16 @@ body {
   }
 }
 
+/* Desktop - sidebar siempre visible */
+@media (min-width: 992px) {
+  .sidebar,
+  .bg-white.border-end {
+    position: relative !important;
+    transform: translateX(0) !important;
+    display: block !important;
+  }
+}
+
 /* Estilos para el botón hamburguesa flotante */
 .btn-brown {
   background-color: var(--brown-primary);
@@ -300,12 +306,4 @@ body {
   background-color: var(--brown-primary);
   border-color: var(--brown-primary);
   color: white;
-}
-
-/* Desktop sidebar siempre visible */
-@media (min-width: 992px) {
-  .sidebar {
-    transform: translateX(0) !important;
-    position: relative !important;
-  }
 }

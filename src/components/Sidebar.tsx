@@ -55,13 +55,13 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout, us
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar unificado */}
       <div
-        className={`sidebar bg-white border-end ${isOpen ? 'sidebar-open' : ''}`}
+        className={`bg-white border-end ${isOpen ? 'd-block' : 'd-none d-lg-block'}`}
         style={{
           width: '260px',
           minHeight: '100vh',
-          position: 'fixed',
+          position: isOpen ? 'fixed' : 'relative',
           top: 0,
           left: 0,
           zIndex: 1045,
@@ -81,6 +81,10 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout, us
                 backgroundColor: 'rgba(255,255,255,0.9)',
                 padding: '8px',
                 borderRadius: '8px'
+              }}
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.style.display = 'none';
               }}
             />
           </div>
@@ -136,11 +140,14 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout, us
             })}
           </ul>
 
-          {/* Botón de cerrar sesión en mobile */}
+          {/* Botón de cerrar sesión (visible siempre en mobile, en desktop en el navbar) */}
           {onLogout && (
             <div className="d-lg-none mt-4 pt-3 border-top">
               <button
-                onClick={onLogout}
+                onClick={() => {
+                  onLogout();
+                  setIsOpen(false);
+                }}
                 className="btn btn-outline-brown w-100 d-flex align-items-center justify-content-center"
               >
                 <LogOut size={18} className="me-2" />
@@ -148,44 +155,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout, us
               </button>
             </div>
           )}
-        </div>
-      </div>
-
-      {/* Sidebar para desktop (siempre visible) */}
-      <div className="d-none d-lg-block bg-white border-end" style={{ width: '260px', minHeight: '100vh' }}>
-        <div className="p-3">
-          <h6 className="text-uppercase text-muted fw-bold mb-3" style={{ fontSize: '0.75rem', letterSpacing: '0.5px' }}>
-            Navegación
-          </h6>
-          <ul className="nav flex-column">
-            {menuItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = activeTab === item.id;
-              return (
-                <li className="nav-item mb-1" key={item.id}>
-                  <a
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setActiveTab(item.id);
-                    }}
-                    className={`nav-link d-flex align-items-center rounded ${
-                      isActive 
-                        ? 'bg-gradient-brown text-white' 
-                        : 'text-dark hover-bg-light'
-                    }`}
-                    style={{ 
-                      padding: '0.75rem 1rem',
-                      transition: 'all 0.2s'
-                    }}
-                  >
-                    <Icon size={18} className="me-3" />
-                    <span className="fw-medium">{item.label}</span>
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
         </div>
       </div>
     </>
