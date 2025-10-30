@@ -54,7 +54,12 @@ function App() {
     <div className="app">
       <Navbar onLogout={handleLogout} userEmail={session.user?.email} />
       <div className="d-flex">
-        <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+        <Sidebar 
+          activeTab={activeTab} 
+          setActiveTab={setActiveTab}
+          onLogout={handleLogout}
+          userEmail={session.user?.email}
+        />
         <main className="main-content flex-grow-1">
           {activeTab === 'dashboard' && <DashboardContent />}
           {activeTab === 'factories' && (

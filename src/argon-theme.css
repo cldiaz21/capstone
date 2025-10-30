@@ -231,3 +231,81 @@ body {
 .fade-in {
   animation: fadeIn 0.3s ease-in;
 }
+
+/* Responsive Styles */
+@media (max-width: 991.98px) {
+  /* Ocultar sidebar de escritorio en mobile */
+  .sidebar {
+    display: block !important;
+  }
+  
+  /* Main content ocupa todo el ancho en mobile */
+  .main-content {
+    width: 100% !important;
+    padding: 1rem !important;
+  }
+  
+  /* Navbar más compacto en mobile */
+  .navbar-brand img {
+    height: 45px !important;
+  }
+  
+  /* Cards con menos padding en mobile */
+  .card-body {
+    padding: 1rem !important;
+  }
+  
+  /* Gráficos responsive */
+  .recharts-wrapper {
+    width: 100% !important;
+    height: auto !important;
+  }
+  
+  /* Tabla responsive */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* KPI cards en columna en mobile */
+  .row > [class*='col-'] {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Estilos para el botón hamburguesa flotante */
+.btn-brown {
+  background-color: var(--brown-primary);
+  border-color: var(--brown-primary);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.btn-brown:hover {
+  background-color: var(--brown-dark);
+  border-color: var(--brown-dark);
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(139, 69, 19, 0.4) !important;
+}
+
+/* Outline brown button */
+.btn-outline-brown {
+  color: var(--brown-primary);
+  border-color: var(--brown-primary);
+  background-color: transparent;
+}
+
+.btn-outline-brown:hover {
+  background-color: var(--brown-primary);
+  border-color: var(--brown-primary);
+  color: white;
+}
+
+/* Desktop sidebar siempre visible */
+@media (min-width: 992px) {
+  .sidebar {
+    transform: translateX(0) !important;
+    position: relative !important;
+  }
+}

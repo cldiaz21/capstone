@@ -293,16 +293,16 @@ const DashboardContent: React.FC = () => {
   };
 
   return (
-    <div className="container-fluid px-4 py-4">
+    <div className="container-fluid px-2 px-md-4 py-3 py-md-4">
       {/* Header */}
-      <div className="d-flex justify-content-between align-items-center mb-4">
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
         <div>
-          <h1 className="h3 fw-bold mb-1">Control de Pérdidas</h1>
-          <p className="text-muted mb-0">
+          <h1 className="h4 h-md-3 fw-bold mb-1">Control de Pérdidas</h1>
+          <p className="text-muted mb-0 small">
             Análisis de pedido: <span className="fw-medium text-brown">{fileName}</span>
           </p>
         </div>
-        <div className="d-flex gap-2">
+        <div className="d-flex gap-2 w-100 w-md-auto">
           <input
             type="file"
             ref={fileInputRef}
@@ -311,22 +311,22 @@ const DashboardContent: React.FC = () => {
             style={{ display: 'none' }}
           />
           <button 
-            className="btn btn-outline-brown d-flex align-items-center"
+            className="btn btn-outline-brown d-flex align-items-center justify-content-center flex-grow-1 flex-md-grow-0"
             onClick={() => fileInputRef.current?.click()}
           >
             <Upload size={18} className="me-2" />
-            Cargar Lista
+            <span className="d-none d-sm-inline">Cargar</span>
           </button>
-          <button className="btn btn-brown d-flex align-items-center" onClick={handleExportCSV}>
+          <button className="btn btn-brown d-flex align-items-center justify-content-center flex-grow-1 flex-md-grow-0" onClick={handleExportCSV}>
             <Download size={18} className="me-2" />
-            Exportar Reporte
+            <span className="d-none d-sm-inline">Exportar</span>
           </button>
         </div>
       </div>
 
       {/* KPI Cards */}
-      <div className="row g-3 mb-4">
-        <div className="col-xl-3 col-md-6">
+      <div className="row g-2 g-md-3 mb-4">
+        <div className="col-6 col-xl-3">
           <div className="card stats-card h-100">
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center">
@@ -398,25 +398,25 @@ const DashboardContent: React.FC = () => {
       </div>
 
       {/* Charts Row */}
-      <div className="row g-4 mb-4">
+      <div className="row g-3 g-md-4 mb-4">
         {/* Line Chart - Evolución */}
-        <div className="col-xl-8">
+        <div className="col-12 col-xl-8">
           <div className="card h-100">
-            <div className="card-header bg-white border-0 py-3">
-              <h5 className="card-title mb-0 fw-bold">
+            <div className="card-header bg-white border-0 py-2 py-md-3">
+              <h5 className="card-title mb-0 fw-bold fs-6 fs-md-5">
                 <TrendingDown size={20} className="me-2 text-brown" />
                 Evolución: Pedidos vs Recibidos
               </h5>
-              <p className="text-muted small mb-0">Contraste entre prendas pedidas y esperadas a recibir</p>
+              <p className="text-muted small mb-0 d-none d-md-block">Contraste entre prendas pedidas y esperadas a recibir</p>
             </div>
-            <div className="card-body">
+            <div className="card-body p-2 p-md-3">
               {lossOverTime.length > 0 ? (
-                <ResponsiveContainer width="100%" height={350}>
-                  <LineChart data={lossOverTime} margin={{ top: 5, right: 30, left: 10, bottom: 5 }}>
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={lossOverTime} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e9ecef" />
                     <XAxis 
                       dataKey="month" 
-                      tick={{ fontSize: 12 }} 
+                      tick={{ fontSize: 10 }} 
                       stroke="#6c757d"
                     />
                     <YAxis 
@@ -466,27 +466,27 @@ const DashboardContent: React.FC = () => {
         </div>
 
         {/* Bar Chart - Top pérdidas */}
-        <div className="col-xl-4">
+        <div className="col-12 col-xl-4">
           <div className="card h-100">
-            <div className="card-header bg-white border-0 py-3">
-              <h5 className="card-title mb-0 fw-bold">
+            <div className="card-header bg-white border-0 py-2 py-md-3">
+              <h5 className="card-title mb-0 fw-bold fs-6 fs-md-5">
                 <AlertTriangle size={20} className="me-2 text-danger" />
                 Top 10 Pérdidas
               </h5>
-              <p className="text-muted small mb-0">Fábricas con mayor % pérdida</p>
+              <p className="text-muted small mb-0 d-none d-md-block">Fábricas con mayor % pérdida</p>
             </div>
-            <div className="card-body">
+            <div className="card-body p-2 p-md-3">
               {topLosses.length > 0 ? (
-                <ResponsiveContainer width="100%" height={350}>
+                <ResponsiveContainer width="100%" height={300}>
                   <BarChart 
                     data={topLosses} 
                     layout="vertical"
-                    margin={{ top: 5, right: 30, left: 80, bottom: 5 }}
+                    margin={{ top: 5, right: 10, left: 60, bottom: 5 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" stroke="#e9ecef" />
                     <XAxis 
                       type="number" 
-                      tick={{ fontSize: 11 }} 
+                      tick={{ fontSize: 10 }} 
                       stroke="#6c757d"
                       domain={[0, 'dataMax + 2']}
                     />
