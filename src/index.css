@@ -2,21 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom CSS Variables for Dashboard Theme - Fixed Colors */
+/* Custom CSS Variables for Dashboard Theme - Blanco limpio */
 :root {
-  /* Dashboard Color Palette - Colores corregidos para buen contraste */
-  --dashboard-primary: #1e293b; /* slate-800 - oscuro */
-  --dashboard-primary-foreground: #f8fafc; /* slate-50 - claro */
-  --dashboard-secondary: #f1f5f9; /* slate-100 - muy claro */
-  --dashboard-secondary-foreground: #0f172a; /* slate-900 - muy oscuro */
+  /* Dashboard Color Palette */
+  --dashboard-primary: #1e293b;
+  --dashboard-primary-foreground: #ffffff;
+  --dashboard-secondary: #f8f9fa;
+  --dashboard-secondary-foreground: #1a1a1a;
   
-  /* Background Colors - Fondos claros con texto oscuro */
-  --dashboard-background: #ffffff; /* blanco */
-  --dashboard-foreground: #0f172a; /* slate-900 - muy oscuro para texto */
-  --dashboard-card: #ffffff; /* blanco */
-  --dashboard-card-foreground: #1e293b; /* slate-800 - oscuro para texto */
-  --dashboard-muted: #f8fafc; /* slate-50 - muy claro */
-  --dashboard-muted-foreground: #64748b; /* slate-500 - gris medio */
+  /* Background Colors - Blanco puro */
+  --dashboard-background: #ffffff;
+  --dashboard-foreground: #1a1a1a;
+  --dashboard-card: #ffffff;
+  --dashboard-card-foreground: #1e293b;
+  --dashboard-muted: #f8f9fa;
+  --dashboard-muted-foreground: #6c757d;
   
   /* Accent Colors */
   --dashboard-accent: #3b82f6; /* blue-500 */
@@ -41,19 +41,19 @@
   --chart-5: #ef4444; /* red-500 */
 }
 
-/* Dark mode support - Modo oscuro con buen contraste */
+/* Dark mode desactivado - siempre blanco */
 @media (prefers-color-scheme: dark) {
   :root {
-    --dashboard-background: #0f172a; /* slate-900 */
-    --dashboard-foreground: #f8fafc; /* slate-50 */
-    --dashboard-card: #1e293b; /* slate-800 */
-    --dashboard-card-foreground: #f1f5f9; /* slate-100 */
-    --dashboard-muted: #334155; /* slate-700 */
-    --dashboard-muted-foreground: #cbd5e1; /* slate-300 */
-    --dashboard-accent: #3b82f6; /* blue-500 */
+    --dashboard-background: #ffffff;
+    --dashboard-foreground: #1a1a1a;
+    --dashboard-card: #ffffff;
+    --dashboard-card-foreground: #1e293b;
+    --dashboard-muted: #f8f9fa;
+    --dashboard-muted-foreground: #6c757d;
+    --dashboard-accent: #8B4513;
     --dashboard-accent-foreground: #ffffff;
-    --dashboard-border: #475569; /* slate-600 */
-    --dashboard-input: #334155; /* slate-700 */
+    --dashboard-border: #e2e8f0;
+    --dashboard-input: #f8f9fa;
   }
 }
 
@@ -64,8 +64,8 @@
 }
 
 body {
-  background-color: var(--dashboard-background);
-  color: var(--dashboard-foreground);
+  background-color: #ffffff !important;
+  color: #1a1a1a;
   font-feature-settings: "rlig" 1, "calt" 1;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -80,8 +80,8 @@ body {
   padding: 0;
   width: 100%;
   min-height: 100vh;
-  background-color: var(--dashboard-background);
-  color: var(--dashboard-foreground);
+  background-color: #ffffff !important;
+  color: #1a1a1a;
 }
 
 /* Utility Classes - Clases de utilidad con colores fijos */
@@ -103,14 +103,14 @@ body {
 }
 
 .glass-effect {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: #1e293b; /* texto oscuro sobre fondo claro */
+  background: #ffffff;
+  backdrop-filter: none;
+  border: 1px solid #e2e8f0;
+  color: #1e293b;
 }
 
 .gradient-bg {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(87deg, #8B4513 0%, #D2691E 100%);
 }
 
 .shadow-glow {
