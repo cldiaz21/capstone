@@ -1,12 +1,7 @@
 import React from 'react';
-import { Search, Bell, User, LogOut } from 'lucide-react';
+import { Search, Bell, User } from 'lucide-react';
 
-interface NavbarProps {
-  onLogout?: () => void;
-  userEmail?: string;
-}
-
-const Navbar: React.FC<NavbarProps> = ({ onLogout, userEmail }) => {
+const Navbar: React.FC = () => {
   return (
     <nav className="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" data-scroll="false">
       <div className="container-fluid py-1 px-3">
@@ -66,23 +61,10 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout, userEmail }) => {
               <a 
                 href="#" 
                 className="nav-link text-body font-weight-bold px-0 d-flex align-items-center"
-                data-bs-toggle="dropdown"
               >
                 <User size={16} className="me-sm-1" />
-                <span className="d-sm-inline d-none">{userEmail || 'Admin'}</span>
+                <span className="d-sm-inline d-none">Admin</span>
               </a>
-              <ul className="dropdown-menu dropdown-menu-end">
-                <li><h6 className="dropdown-header">{userEmail}</h6></li>
-                <li><hr className="dropdown-divider" /></li>
-                {onLogout && (
-                  <li>
-                    <button className="dropdown-item d-flex align-items-center" onClick={onLogout}>
-                      <LogOut size={16} className="me-2" />
-                      Cerrar Sesión
-                    </button>
-                  </li>
-                )}
-              </ul>
             </li>
           </ul>
         </div>
