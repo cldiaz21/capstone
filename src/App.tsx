@@ -15,10 +15,12 @@ function App() {
 
   useEffect(() => {
     // Aplicar clases de Argon al body
-    document.body.classList.add('g-sidenav-show', 'bg-gray-100');
+    document.body.classList.add('g-sidenav-show');
+    document.body.style.backgroundColor = '#ffffff';
     
     return () => {
-      document.body.classList.remove('g-sidenav-show', 'bg-gray-100');
+      document.body.classList.remove('g-sidenav-show');
+      document.body.style.backgroundColor = '';
     };
   }, []);
 

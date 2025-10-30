@@ -293,7 +293,7 @@ const DashboardContent: React.FC = () => {
   };
 
   return (
-    <div className="container-fluid px-2 px-md-4 py-3 py-md-4">
+    <div className="container-fluid px-2 px-md-4 py-3 py-md-4" style={{ backgroundColor: '#ffffff', minHeight: '100vh' }}>
       {/* Header */}
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
         <div>
