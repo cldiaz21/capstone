@@ -1,0 +1,233 @@
+/* Corporate Color Scheme - Comercial Marisol */
+:root {
+  /* Corporate Colors */
+  --brown-primary: #8B4513;
+  --brown-dark: #5C2E0A;
+  --brown-light: #A0522D;
+  --brown-lighter: #D2691E;
+  --black-primary: #000000;
+  --black-soft: #1a1a1a;
+  --white-primary: #FFFFFF;
+  --white-soft: #f8f9fa;
+  
+  /* Accent Colors */
+  --success: #28a745;
+  --danger: #dc3545;
+  --warning: #ffc107;
+  --info: #17a2b8;
+  
+  /* Text Colors */
+  --text-primary: #1a1a1a;
+  --text-secondary: #6c757d;
+  --text-muted: #adb5bd;
+  
+  /* Backgrounds */
+  --bg-light: #f8f9fa;
+  --bg-lighter: #ffffff;
+}
+
+body {
+  font-family: 'Open Sans', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-light);
+  color: var(--text-primary);
+}
+
+/* Gradient Backgrounds */
+.bg-gradient-brown {
+  background: linear-gradient(87deg, var(--brown-primary) 0, var(--brown-lighter) 100%) !important;
+}
+
+.bg-gradient-dark {
+  background: linear-gradient(87deg, var(--black-soft) 0, #2d2d2d 100%) !important;
+}
+
+/* Brown Button Styles */
+.btn-brown {
+  background-color: var(--brown-primary);
+  border-color: var(--brown-primary);
+  color: white;
+}
+
+.btn-brown:hover {
+  background-color: var(--brown-dark);
+  border-color: var(--brown-dark);
+  color: white;
+}
+
+.btn-outline-brown {
+  background-color: transparent;
+  border-color: var(--brown-primary);
+  color: var(--brown-primary);
+}
+
+.btn-outline-brown:hover {
+  background-color: var(--brown-primary);
+  border-color: var(--brown-primary);
+  color: white;
+}
+
+/* Text Colors */
+.text-brown {
+  color: var(--brown-primary) !important;
+}
+
+.text-brown-dark {
+  color: var(--brown-dark) !important;
+}
+
+/* Card Shadows - Argon Style */
+.card {
+  box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15);
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* Sidebar Styles */
+.sidebar {
+  position: fixed;
+  top: 56px;
+  left: 0;
+  height: calc(100vh - 56px);
+  overflow-y: auto;
+  z-index: 100;
+  box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15);
+}
+
+.sidebar .nav-link {
+  font-size: 0.875rem;
+}
+
+.hover-bg-light:hover {
+  background-color: var(--bg-light) !important;
+}
+
+/* Main Content Area */
+.main-content {
+  margin-left: 260px;
+  padding-top: 56px;
+  min-height: 100vh;
+  background-color: var(--bg-light);
+}
+
+/* Stats Card Styles */
+.stats-card {
+  border-left: 3px solid var(--brown-primary);
+}
+
+.stats-card-success {
+  border-left-color: var(--success);
+}
+
+.stats-card-danger {
+  border-left-color: var(--danger);
+}
+
+.stats-card-info {
+  border-left-color: var(--info);
+}
+
+/* Chart Container */
+.chart-container {
+  background: white;
+  border-radius: 0.375rem;
+  padding: 1.5rem;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-light);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--brown-light);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brown-primary);
+}
+
+/* Responsive Design */
+@media (max-width: 991.98px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .sidebar.show {
+    transform: translateX(0);
+  }
+  
+  .main-content {
+    margin-left: 0;
+  }
+}
+
+/* Badge Styles */
+.badge {
+  font-weight: 600;
+  padding: 0.375rem 0.75rem;
+}
+
+/* Alert Styles */
+.alert {
+  border: none;
+  border-left: 3px solid;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  border-left-color: var(--danger);
+  color: #721c24;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  border-left-color: var(--success);
+  color: #155724;
+}
+
+/* Table Styles */
+.table {
+  background: white;
+}
+
+.table thead th {
+  border-bottom: 2px solid var(--brown-primary);
+  color: var(--text-primary);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+}
+
+/* Navbar Styles */
+.navbar {
+  box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15);
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
