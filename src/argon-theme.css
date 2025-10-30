@@ -270,7 +270,7 @@ body {
   height: 48px;
   display: inline-flex;
   align-items: center;
-  justify-content-center;
+  justify-content: center;
   text-align: center;
   border-radius: 0.75rem;
 }
