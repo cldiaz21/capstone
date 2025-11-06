@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "cd dashboard-perdidas && npm install && npm run build",
+  "outputDirectory": "dashboard-perdidas/dist",
+  "installCommand": "cd dashboard-perdidas && npm install",
+  "framework": "vite"
+}
