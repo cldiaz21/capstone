@@ -1,0 +1,6 @@
+# Arduino Weight Bridge - Dependencias de Python
+# Instalar con: pip install -r requirements.txt
+
+pyserial==3.5
+python-dotenv==1.0.0
+supabase==2.3.4
