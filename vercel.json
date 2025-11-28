@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd dashboard-perdidas && npm install && npm run build",
+  "buildCommand": "cd dashboard-perdidas && npm run build",
   "outputDirectory": "dashboard-perdidas/dist",
   "installCommand": "cd dashboard-perdidas && npm install"
 }
