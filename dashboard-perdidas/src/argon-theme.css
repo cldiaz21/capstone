@@ -1,0 +1,516 @@
+/* Corporate Color Scheme - Comercial Marisol based on Argon Dashboard */
+:root {
+  /* Corporate Colors */
+  --brown-primary: #8B4513;
+  --brown-dark: #5C2E0A;
+  --brown-light: #A0522D;
+  --brown-lighter: #D2691E;
+  --black-primary: #000000;
+  --black-soft: #1a1a1a;
+  --white-primary: #FFFFFF;
+  --white-soft: #f8f9fa;
+  
+  /* Accent Colors */
+  --success: #28a745;
+  --danger: #dc3545;
+  --warning: #ffc107;
+  --info: #17a2b8;
+  
+  /* Text Colors */
+  --text-primary: #1a1a1a;
+  --text-secondary: #6c757d;
+  --text-muted: #adb5bd;
+  
+  /* Backgrounds */
+  --bg-light: #f8f9fa;
+  --bg-lighter: #ffffff;
+  --bg-gray-100: #f8f9fa;
+}
+
+/* Body Styles - Argon Dashboard */
+body {
+  font-family: 'Open Sans', system-ui, -apple-system, sans-serif;
+  color: var(--text-primary);
+  background-color: #ffffff !important;
+}
+
+.g-sidenav-show {
+  overflow-x: hidden !important;
+}
+
+.bg-gray-100 {
+  background-color: #ffffff !important;
+}
+
+/* Gradient Backgrounds */
+.bg-gradient-brown {
+  background: linear-gradient(87deg, var(--brown-primary) 0, var(--brown-lighter) 100%) !important;
+}
+
+.bg-gradient-dark {
+  background: linear-gradient(87deg, var(--black-soft) 0, #2d2d2d 100%) !important;
+}
+
+/* Brown Button Styles */
+.btn-brown {
+  background-color: var(--brown-primary);
+  border-color: var(--brown-primary);
+  color: white;
+}
+
+.btn-brown:hover {
+  background-color: var(--brown-dark);
+  border-color: var(--brown-dark);
+  color: white;
+}
+
+.btn-outline-brown {
+  background-color: transparent;
+  border-color: var(--brown-primary);
+  color: var(--brown-primary);
+}
+
+.btn-outline-brown:hover {
+  background-color: var(--brown-primary);
+  border-color: var(--brown-primary);
+  color: white;
+}
+
+/* Text Colors */
+.text-brown {
+  color: var(--brown-primary) !important;
+}
+
+.text-brown-dark {
+  color: var(--brown-dark) !important;
+}
+
+/* Card Shadows - Argon Style */
+.card {
+  box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15);
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* Sidenav - Argon Dashboard Style */
+.sidenav {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 15.625rem !important;
+  max-width: 15.625rem !important;
+  height: 100vh;
+  overflow-y: auto;
+  box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15);
+  z-index: 1020;
+}
+
+.sidenav .navbar-brand {
+  padding: 1.3rem 2rem 1.2rem;
+  display: block;
+}
+
+.sidenav .navbar-brand-img {
+  max-height: 2rem;
+}
+
+.sidenav hr {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.sidenav .navbar-nav .nav-item .nav-link {
+  padding: 0.65rem 1rem;
+  margin: 0 1rem;
+  border-radius: 0.5rem;
+  color: #67748e;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.sidenav .navbar-nav .nav-item .nav-link.active {
+  background-image: linear-gradient(87deg, var(--brown-primary) 0, var(--brown-lighter) 100%);
+  color: #fff !important;
+  box-shadow: 0 4px 6px -1px rgba(139, 69, 19, 0.3), 0 2px 4px -1px rgba(139, 69, 19, 0.2);
+}
+
+.sidenav .navbar-nav .nav-item .nav-link .icon {
+  width: 34px;
+  height: 34px;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  margin-right: 0.75rem;
+}
+
+.sidenav .navbar-nav .nav-link-text {
+  transition: 0.3s ease;
+}
+
+/* Sidenav Footer */
+.sidenav-footer {
+  margin-bottom: 1rem;
+}
+
+/* Sidenav Footer */
+.sidenav-footer {
+  margin-bottom: 1rem;
+}
+
+.sidenav-footer .card {
+  background: transparent;
+  box-shadow: none !important;
+}
+
+/* Main Content - Argon Style */
+.main-content {
+  position: relative;
+  transition: margin-left 0.3s ease;
+  background-color: #ffffff !important;
+}
+
+/* Responsive adjustments for main content */
+@media (min-width: 1200px) {
+  .g-sidenav-show .main-content {
+    margin-left: calc(15.625rem + 3rem);
+  }
+  
+  .sidenav {
+    display: block !important;
+  }
+}
+
+@media (max-width: 1199.98px) {
+  .main-content {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+  
+  .sidenav {
+    transform: translateX(-17.125rem);
+    transition: transform 0.3s ease;
+  }
+  
+  .sidenav:not(.d-none) {
+    transform: translateX(0);
+  }
+  
+  /* Asegurar que el navbar sea responsive */
+  .navbar-main {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+/* Mobile specific fixes */
+@media (max-width: 767.98px) {
+  .container-fluid {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  .card {
+    margin-bottom: 1rem;
+  }
+  
+  /* Hacer KPIs más pequeños en mobile */
+  .card-body {
+    padding: 1rem !important;
+  }
+  
+  h1, .h1 {
+    font-size: 1.5rem !important;
+  }
+  
+  h2, .h2 {
+    font-size: 1.25rem !important;
+  }
+}
+
+/* Border radius utilities */
+.border-radius-xl {
+  border-radius: 0.75rem !important;
+}
+
+.border-radius-lg {
+  border-radius: 0.5rem !important;
+}
+
+.border-radius-md {
+  border-radius: 0.375rem !important;
+}
+
+/* Navbar Main */
+.navbar-main {
+  padding: 1rem 0;
+  background: #fff;
+  box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15);
+  border-radius: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+  background-color: transparent;
+}
+
+.breadcrumb-item {
+  font-size: 0.875rem;
+}
+
+.breadcrumb-item.active {
+  color: #344767;
+  font-weight: 600;
+}
+
+/* Font weights */
+.font-weight-bold {
+  font-weight: 700 !important;
+}
+
+.font-weight-bolder {
+  font-weight: 800 !important;
+}
+
+.font-weight-normal {
+  font-weight: 400 !important;
+}
+
+/* Text sizes */
+.text-xs {
+  font-size: 0.75rem !important;
+}
+
+.text-sm {
+  font-size: 0.875rem !important;
+}
+
+/* Opacity utilities */
+.opacity-5 {
+  opacity: 0.5 !important;
+}
+
+.opacity-9 {
+  opacity: 0.9 !important;
+}
+
+/* Icon shapes */
+.icon-shape {
+  width: 48px;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 0.75rem;
+}
+
+.icon-shape.icon-sm {
+  width: 32px;
+  height: 32px;
+}
+
+/* Stats Card Styles */
+.stats-card {
+  border-left: 3px solid var(--brown-primary);
+}
+
+.stats-card-success {
+  border-left-color: var(--success);
+}
+
+.stats-card-danger {
+  border-left-color: var(--danger);
+}
+
+.stats-card-info {
+  border-left-color: var(--info);
+}
+
+/* Chart Container */
+.chart-container {
+  background: white;
+  border-radius: 0.375rem;
+  padding: 1.5rem;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-light);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--brown-light);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brown-primary);
+}
+
+/* Badge Styles */
+.badge {
+  font-weight: 600;
+  padding: 0.375rem 0.75rem;
+}
+
+/* Alert Styles */
+.alert {
+  border: none;
+  border-left: 3px solid;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  border-left-color: var(--danger);
+  color: #721c24;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  border-left-color: var(--success);
+  color: #155724;
+}
+
+/* Table Styles */
+.table {
+  background: white;
+}
+
+.table thead th {
+  border-bottom: 2px solid var(--brown-primary);
+  color: var(--text-primary);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+}
+
+/* Navbar Styles */
+.navbar {
+  box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15);
+  position: sticky !important;
+  top: 0;
+  z-index: 1030 !important;
+  background-color: white;
+}
+
+/* Layout principal */
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Main content con margin para el sidebar en desktop */
+.main-content {
+  margin-left: 260px;
+  width: calc(100% - 260px);
+  min-height: calc(100vh - 70px);
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+/* Responsive Styles */
+@media (max-width: 991.98px) {
+  /* Main content ocupa todo el ancho en mobile */
+  .main-content {
+    width: 100% !important;
+    padding: 1rem !important;
+    margin-left: 0 !important;
+  }
+  
+  /* Navbar más compacto en mobile */
+  .navbar-brand img {
+    height: 45px !important;
+  }
+  
+  /* Cards con menos padding en mobile */
+  .card-body {
+    padding: 1rem !important;
+  }
+  
+  /* Gráficos responsive */
+  .recharts-wrapper {
+    width: 100% !important;
+    height: auto !important;
+  }
+  
+  /* Tabla responsive */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* KPI cards en columna en mobile */
+  .row > [class*='col-'] {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Desktop - sidebar fijo en la izquierda */
+@media (min-width: 992px) {
+  .bg-white.border-end {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 1020 !important;
+  }
+}
+
+/* Estilos para el botón hamburguesa flotante */
+.btn-brown {
+  background-color: var(--brown-primary);
+  border-color: var(--brown-primary);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.btn-brown:hover {
+  background-color: var(--brown-dark);
+  border-color: var(--brown-dark);
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(139, 69, 19, 0.4) !important;
+}
+
+/* Outline brown button */
+.btn-outline-brown {
+  color: var(--brown-primary);
+  border-color: var(--brown-primary);
+  background-color: transparent;
+}
+
+.btn-outline-brown:hover {
+  background-color: var(--brown-primary);
+  border-color: var(--brown-primary);
+  color: white;
+}

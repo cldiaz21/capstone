@@ -1,0 +1,70 @@
+/* App-specific styles - Fondo blanco limpio */
+.App {
+  min-height: 100vh;
+  width: 100%;
+  background: #ffffff;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: #1a1a1a;
+}
+
+/* Ensure Tailwind utilities work properly */
+* {
+  box-sizing: border-box;
+}
+
+/* Dashboard container styles */
+.dashboard-container {
+  background: #ffffff;
+  backdrop-filter: none;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  margin: 20px;
+  padding: 32px;
+  min-height: calc(100vh - 40px);
+  color: #1e293b; /* texto oscuro sobre fondo claro */
+}
+
+/* Card hover effects - Mejorado */
+.dashboard-card {
+  background: rgba(255, 255, 255, 0.95);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  color: #1e293b; /* texto oscuro sobre fondo blanco */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.dashboard-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Chart containers */
+.chart-container {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 8px 0;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.5);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 126, 234, 0.7);
+}

@@ -1,0 +1,971 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Animación para indicador de datos en vivo */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+/* Animación suave para actualización de peso */
+@keyframes weightUpdate {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Custom CSS Variables for Dashboard Theme - Colores Corporativos */
+:root {
+  /* Dashboard Color Palette */
+  --dashboard-primary: #000000;
+  --dashboard-primary-foreground: #ffffff;
+  --dashboard-secondary: #1a1a1a;
+  --dashboard-secondary-foreground: #ffffff;
+  
+  /* Background Colors - Degradados corporativos */
+  --dashboard-background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+  --dashboard-foreground: #ffffff;
+  --dashboard-card: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  --dashboard-card-foreground: #ffffff;
+  --dashboard-muted: #2d2d2d;
+  --dashboard-muted-foreground: #cccccc;
+  
+  /* Accent Colors */
+  --dashboard-accent: #ffffff;
+  --dashboard-accent-foreground: #000000;
+  --dashboard-border: rgba(255, 255, 255, 0.1);
+  --dashboard-input: rgba(255, 255, 255, 0.05);
+  --dashboard-ring: #ffffff;
+  
+  /* Status Colors */
+  --dashboard-success: #10b981;
+  --dashboard-success-foreground: #ffffff;
+  --dashboard-warning: #f59e0b;
+  --dashboard-warning-foreground: #000000;
+  --dashboard-danger: #ef4444;
+  --dashboard-danger-foreground: #ffffff;
+  
+  /* Chart Colors */
+  --chart-1: #ffffff;
+  --chart-2: #cccccc;
+  --chart-3: #999999;
+  --chart-4: #666666;
+  --chart-5: #333333;
+}
+
+/* Dark mode desactivado - siempre blanco */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --dashboard-background: #ffffff;
+    --dashboard-foreground: #1a1a1a;
+    --dashboard-card: #ffffff;
+    --dashboard-card-foreground: #1e293b;
+    --dashboard-muted: #f8f9fa;
+    --dashboard-muted-foreground: #6c757d;
+    --dashboard-accent: #8B4513;
+    --dashboard-accent-foreground: #ffffff;
+    --dashboard-border: #e2e8f0;
+    --dashboard-input: #f8f9fa;
+  }
+}
+
+/* Base Styles - Arreglado para buen contraste */
+* {
+  border-color: var(--dashboard-border);
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #ffffff !important;
+  color: #1a1a1a;
+  font-feature-settings: "rlig" 1, "calt" 1;
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, "Roboto Mono", Menlo, Monaco, "Liberation Mono", "DejaVu Sans Mono", "Courier New", monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2d2d2d 100%) !important;
+  background-attachment: fixed !important;
+  color: #ffffff;
+}
+
+/* Estilos Corporativos para Cards de Bootstrap */
+.card {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+  border-radius: 0.5rem !important;
+}
+
+.card-header {
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+.card-body {
+  color: #ffffff !important;
+}
+
+.card-title, .card-text, h1, h2, h3, h4, h5, h6, p, span, div {
+  color: #ffffff !important;
+}
+
+/* Textos específicos con colores apropiados */
+.text-muted {
+  color: #ffffff !important;
+}
+
+.text-secondary {
+  color: #e0e0e0 !important;
+}
+
+.text-primary {
+  color: #ffffff !important;
+}
+
+.text-success {
+  color: #10b981 !important;
+}
+
+.text-danger {
+  color: #ef4444 !important;
+}
+
+.text-warning {
+  color: #f59e0b !important;
+}
+
+.text-info {
+  color: #3b82f6 !important;
+}
+
+/* Asegurar que todos los labels sean blancos */
+label, .form-label, .form-check-label {
+  color: #ffffff !important;
+  font-weight: 500;
+}
+
+/* Links */
+a {
+  color: #ffffff !important;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #cccccc !important;
+  text-decoration: underline;
+}
+
+/* Small text */
+small, .small {
+  color: #cccccc !important;
+}
+
+.table {
+  color: #1a1a1a !important;
+  background: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.125) !important;
+}
+
+.table thead th {
+  color: #1a1a1a !important;
+  background: #f8f9fa !important;
+  border-color: rgba(0, 0, 0, 0.125) !important;
+  font-weight: 600 !important;
+}
+
+.table tbody td {
+  color: #1a1a1a !important;
+  border-color: rgba(0, 0, 0, 0.125) !important;
+}
+
+.table tbody tr {
+  background: #ffffff !important;
+}
+
+.table-hover tbody tr:hover {
+  background: #f8f9fa !important;
+}
+
+/* Asegurar que el texto en tablas sea visible */
+.table td strong, .table td span, .table td div {
+  color: #1a1a1a !important;
+}
+
+.form-control, .form-select {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.form-control:focus, .form-select:focus {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.1) !important;
+}
+
+.form-control::placeholder {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.form-control option {
+  background: #1a1a1a !important;
+  color: #ffffff !important;
+}
+
+.form-select option {
+  background: #1a1a1a !important;
+  color: #ffffff !important;
+}
+
+.form-label {
+  color: #ffffff !important;
+  font-weight: 500 !important;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%) !important;
+  border: none !important;
+  color: #000000 !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.2) !important;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%) !important;
+  color: #000000 !important;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3) !important;
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #3d3d3d 0%, #2d2d2d 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(135deg, #4d4d4d 0%, #3d3d3d 100%) !important;
+  color: #ffffff !important;
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+
+.btn-warning {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+  border: none !important;
+  color: #000000 !important;
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+
+.btn-info {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+
+.modal-content {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.modal-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.modal-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.modal-title {
+  color: #ffffff !important;
+}
+
+.btn-close {
+  filter: invert(1) brightness(2);
+  opacity: 0.8;
+}
+
+.btn-close:hover {
+  opacity: 1;
+}
+
+.alert {
+  background: linear-gradient(135deg, #2d2d2d 0%, #3d3d3d 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+/* Utility Classes - Clases de utilidad con colores corporativos */
+.text-balance {
+  text-wrap: balance;
+}
+
+.text-dark {
+  color: #000000 !important;
+}
+
+.text-light {
+  color: #ffffff !important;
+}
+
+.text-gray-800 {
+  color: #ffffff !important;
+}
+
+.bg-card {
+  background: var(--dashboard-card);
+  color: var(--dashboard-card-foreground);
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.gradient-bg {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+}
+
+.shadow-glow {
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estilos para gráficas Recharts */
+.recharts-wrapper {
+  color: #ffffff !important;
+}
+
+.recharts-text {
+  fill: #ffffff !important;
+}
+
+.recharts-cartesian-axis-tick-value {
+  fill: #ffffff !important;
+}
+
+.recharts-legend-item-text {
+  color: #ffffff !important;
+}
+
+.recharts-cartesian-axis-line {
+  stroke: #ffffff !important;
+}
+
+.recharts-cartesian-axis-tick-line {
+  stroke: #ffffff !important;
+}
+
+.recharts-tooltip-wrapper {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Badge styles con degradados corporativos */
+.badge {
+  font-weight: 600 !important;
+}
+
+.badge.bg-success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  color: #ffffff !important;
+}
+
+.badge.bg-warning {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+  color: #000000 !important;
+}
+
+.badge.bg-danger {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  color: #ffffff !important;
+}
+
+.badge.bg-info {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+  color: #ffffff !important;
+}
+
+.badge.bg-secondary {
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%) !important;
+  color: #ffffff !important;
+}
+
+.badge.bg-primary {
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%) !important;
+  color: #000000 !important;
+}
+
+/* Spinners y loaders */
+.spinner-border {
+  color: #ffffff !important;
+}
+
+/* Pagination */
+.pagination .page-link {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.pagination .page-link:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.pagination .page-item.active .page-link {
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%) !important;
+  border-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* Dropdown menus */
+.dropdown-menu {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+}
+
+.dropdown-item {
+  color: #ffffff !important;
+}
+
+.dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+/* List groups */
+.list-group-item {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.list-group-item:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Navs y tabs */
+.nav-link {
+  color: #ffffff !important;
+}
+
+.nav-link:hover {
+  color: #cccccc !important;
+}
+
+.nav-link.active {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+/* Progress bars */
+.progress {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.progress-bar {
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%) !important;
+  color: #000000 !important;
+}
+
+/* Breadcrumbs */
+.breadcrumb {
+  background: rgba(255, 255, 255, 0.03) !important;
+}
+
+.breadcrumb-item, .breadcrumb-item a {
+  color: #ffffff !important;
+}
+
+.breadcrumb-item.active {
+  color: #cccccc !important;
+}
+
+/* Tooltips */
+.tooltip-inner {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+  color: #ffffff !important;
+}
+
+/* Popovers */
+.popover {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.popover-header {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.popover-body {
+  color: #ffffff !important;
+}
+
+/* Input groups */
+.input-group-text {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+/* Checkboxes y radios */
+.form-check-input {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.form-check-input:checked {
+  background-color: #ffffff !important;
+  border-color: #ffffff !important;
+}
+
+.form-check-input:focus {
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Close buttons */
+.btn-close {
+  filter: invert(1) brightness(2);
+  opacity: 0.8;
+}
+
+.btn-close:hover {
+  opacity: 1;
+}
+
+/* Text utilities override - BLANCO para mejor visibilidad */
+.text-gray-500, .text-gray-600, .text-gray-700, .text-gray-800, .text-gray-900 {
+  color: #ffffff !important;
+}
+
+/* Asegurar visibilidad en elementos específicos de SB Admin */
+.text-xs, .text-sm {
+  color: #ffffff !important;
+}
+
+.font-weight-bold, .fw-bold {
+  color: #ffffff !important;
+}
+
+/* Cards con imágenes */
+.card-img-top, .card-img-bottom {
+  border-radius: 0.5rem;
+}
+
+/* Offcanvas */
+.offcanvas {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+  color: #ffffff !important;
+}
+
+.offcanvas-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.offcanvas-title {
+  color: #ffffff !important;
+}
+
+/* Accordion */
+.accordion-item {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.accordion-button {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #ffffff !important;
+}
+
+.accordion-button:not(.collapsed) {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.accordion-body {
+  color: #ffffff !important;
+}
+
+/* Font Family Global Override - Geist Mono */
+* {
+  font-family: ui-monospace, SFMono-Regular, "Roboto Mono", Menlo, Monaco, "Liberation Mono", "DejaVu Sans Mono", "Courier New", monospace !important;
+}
+
+/* Asegurar que todos los elementos de texto usen la fuente monoespaciada */
+body, h1, h2, h3, h4, h5, h6, p, span, div, a, button, input, select, textarea, label, .card, .btn, .nav-link, .dropdown-item, .list-group-item {
+  font-family: ui-monospace, SFMono-Regular, "Roboto Mono", Menlo, Monaco, "Liberation Mono", "DejaVu Sans Mono", "Courier New", monospace !important;
+}
+
+/* ============================================
+   LOGIN STYLES - Comercial Marisol
+   ============================================ */
+
+.login-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0a0a0a;
+  overflow: hidden;
+}
+
+/* Background Boxes - Aceternity UI Style */
+.background-boxes-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.background-boxes-container {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  transform: skewX(-12deg) skewY(-12deg) scale(0.675) rotate(0deg);
+  display: flex;
+  flex-direction: column;
+}
+
+.background-boxes-row {
+  display: flex;
+  width: 100%;
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.background-box {
+  width: 60px;
+  height: 60px;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.01);
+  transition: background-color 0.3s ease;
+}
+
+.background-box:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.background-boxes-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, transparent 20%, #0a0a0a 80%);
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Simple Background - Optimizado para carga rápida */
+.login-background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 50%, #2d2d2d 100%);
+  z-index: 0;
+}
+
+/* Login Card */
+.login-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 450px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 3rem 2.5rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Logo Section */
+.login-logo {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.logo-circle {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 1.5rem;
+  background: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
+  animation: pulse 2s infinite;
+  padding: 15px;
+  overflow: hidden;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 12px 30px rgba(255, 255, 255, 0.3);
+  }
+}
+
+.logo-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.logo-text {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #000000;
+  letter-spacing: -1px;
+}
+
+.company-name {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.5px;
+}
+
+.company-subtitle {
+  font-size: 0.95rem;
+  color: #cccccc;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Form Styles */
+.login-form {
+  margin-top: 2rem;
+}
+
+.alert-error {
+  background-color: rgba(231, 74, 59, 0.1);
+  border: 1px solid rgba(231, 74, 59, 0.3);
+  color: #E74A3B;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+  animation: shake 0.5s;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #ffffff;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  color: #ffffff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-group input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.form-group input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+.form-group input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Login Button */
+.login-button {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+  border: none;
+  border-radius: 0.5rem;
+  color: #000000;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  transition: all 0.3s ease;
+  margin-top: 2rem;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+}
+
+.login-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
+}
+
+.login-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.login-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Spinner */
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(0, 0, 0, 0.2);
+  border-top-color: #000000;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Footer */
+.login-footer {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.login-footer p {
+  color: #999999;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .login-card {
+    padding: 2rem 1.5rem;
+    margin: 1rem;
+    max-width: calc(100% - 2rem);
+  }
+
+  .company-name {
+    font-size: 1.5rem;
+  }
+
+  .logo-circle {
+    width: 70px;
+    height: 70px;
+  }
+
+  .logo-text {
+    font-size: 1.75rem;
+  }
+}

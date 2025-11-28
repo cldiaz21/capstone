@@ -1,0 +1,490 @@
+/* ========================================
+   RESPONSIVE STYLES - COMERCIAL MARISOL
+   Mobile First Approach
+   ======================================== */
+
+/* Variables CSS para consistencia */
+:root {
+  --sidebar-width: 14rem;
+  --navbar-height: 4.375rem;
+  --brown-primary: #8B4513;
+  --brown-dark: #5C2E0A;
+}
+
+/* ========================================
+   SIDEBAR RESPONSIVE
+   ======================================== */
+
+/* Desktop (por defecto) */
+.sidebar-sb {
+  width: var(--sidebar-width);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 1020;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Logo del sidebar responsive */
+.sidebar-logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 8px;
+  transition: all 0.3s ease;
+}
+
+/* Ajustar logo en pantallas más pequeñas */
+@media (max-width: 767.98px) {
+  .sidebar-logo {
+    width: 70px !important;
+    height: 70px !important;
+    padding: 10px !important;
+  }
+  
+  .sidebar-brand {
+    padding: 1.25rem 0.75rem !important;
+  }
+  
+  .sidebar-brand-text {
+    font-size: 0.95rem !important;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .sidebar-logo {
+    width: 65px !important;
+    height: 65px !important;
+  }
+  
+  .sidebar-brand-text {
+    font-size: 0.9rem !important;
+  }
+}
+
+/* Main content con margen en desktop */
+.main-content {
+  margin-left: var(--sidebar-width);
+  transition: margin-left 0.3s ease-in-out;
+}
+
+/* Tablet y menores (< 992px) */
+@media (max-width: 991.98px) {
+  .sidebar-sb {
+    transform: translateX(-100%);
+  }
+  
+  .sidebar-sb.show {
+    transform: translateX(0);
+  }
+  
+  .main-content {
+    margin-left: 0 !important;
+  }
+}
+
+/* Overlay para cerrar sidebar en móvil */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1019;
+}
+
+@media (max-width: 991.98px) {
+  .sidebar-overlay.show {
+    display: block;
+  }
+}
+
+/* ========================================
+   NAVBAR RESPONSIVE
+   ======================================== */
+
+.topbar {
+  height: var(--navbar-height);
+  padding: 0 1rem;
+}
+
+/* Móvil (< 576px) */
+@media (max-width: 575.98px) {
+  .topbar {
+    padding: 0 0.5rem;
+  }
+  
+  .topbar h1 {
+    font-size: 1rem !important;
+  }
+  
+  .topbar .d-none.d-lg-inline {
+    display: none !important;
+  }
+}
+
+/* ========================================
+   CARDS Y CONTAINERS RESPONSIVE
+   ======================================== */
+
+.card {
+  margin-bottom: 1rem;
+}
+
+.container-fluid {
+  padding: 1rem;
+}
+
+/* Móvil */
+@media (max-width: 575.98px) {
+  .container-fluid {
+    padding: 0.75rem;
+  }
+  
+  .card {
+    margin-bottom: 0.75rem;
+  }
+  
+  .card-body {
+    padding: 0.75rem !important;
+  }
+}
+
+/* ========================================
+   TABLAS RESPONSIVE
+   ======================================== */
+
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Móvil - fuente más pequeña en tablas */
+@media (max-width: 575.98px) {
+  .table {
+    font-size: 0.75rem;
+  }
+  
+  .table th,
+  .table td {
+    padding: 0.5rem !important;
+    white-space: nowrap;
+  }
+}
+
+/* ========================================
+   GRÁFICOS RESPONSIVE (Chart.js)
+   ======================================== */
+
+/* Contenedores de gráficos responsive */
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+}
+
+/* Tablet */
+@media (max-width: 991.98px) {
+  .chart-container {
+    height: 350px;
+  }
+}
+
+/* Móvil - altura fija más pequeña */
+@media (max-width: 575.98px) {
+  .chart-container {
+    height: 280px;
+  }
+  
+  /* Reducir padding de cards con gráficos */
+  .card-body:has(canvas) {
+    padding: 0.5rem !important;
+  }
+  
+  /* Ajustar fuente de leyendas */
+  canvas {
+    max-width: 100%;
+    height: auto !important;
+  }
+}
+
+/* ========================================
+   FORMULARIOS RESPONSIVE
+   ======================================== */
+
+.form-control,
+.form-select {
+  font-size: 0.875rem;
+}
+
+/* Móvil */
+@media (max-width: 575.98px) {
+  .form-control,
+  .form-select,
+  .btn {
+    font-size: 0.8rem;
+  }
+  
+  .form-label {
+    font-size: 0.75rem;
+    margin-bottom: 0.25rem;
+  }
+}
+
+/* ========================================
+   GRID COLUMNS RESPONSIVE
+   ======================================== */
+
+/* Ajustar columnas en móvil */
+@media (max-width: 575.98px) {
+  .col-xl-3,
+  .col-xl-4,
+  .col-xl-6,
+  .col-md-6,
+  .col-md-4,
+  .col-md-3 {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* ========================================
+   BOTONES RESPONSIVE
+   ======================================== */
+
+.btn {
+  white-space: nowrap;
+}
+
+/* Móvil - botones full width cuando necesario */
+@media (max-width: 575.98px) {
+  .btn-block-mobile {
+    width: 100%;
+    display: block;
+  }
+}
+
+/* ========================================
+   BADGES Y PEQUEÑOS ELEMENTOS
+   ======================================== */
+
+@media (max-width: 575.98px) {
+  .badge {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.35rem;
+  }
+  
+  .small,
+  .text-xs {
+    font-size: 0.7rem !important;
+  }
+}
+
+/* ========================================
+   STATS CARDS (KPIs)
+   ======================================== */
+
+.stats-card {
+  min-height: 100px;
+}
+
+@media (max-width: 575.98px) {
+  .stats-card {
+    min-height: 80px;
+  }
+  
+  .stats-card .h5 {
+    font-size: 1rem !important;
+  }
+  
+  .stats-card .text-xs {
+    font-size: 0.65rem !important;
+  }
+}
+
+/* ========================================
+   DROPDOWNS RESPONSIVE
+   ======================================== */
+
+.dropdown-menu {
+  max-width: 90vw;
+}
+
+@media (max-width: 575.98px) {
+  .dropdown-menu {
+    font-size: 0.8rem;
+  }
+  
+  .dropdown-item {
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+/* ========================================
+   UTILITIES RESPONSIVE
+   ======================================== */
+
+/* Ocultar elementos en móvil */
+.hide-mobile {
+  display: block;
+}
+
+@media (max-width: 575.98px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+/* Mostrar solo en móvil */
+.show-mobile {
+  display: none;
+}
+
+@media (max-width: 575.98px) {
+  .show-mobile {
+    display: block !important;
+  }
+}
+
+/* ========================================
+   SCROLL SUAVE EN MÓVIL
+   ======================================== */
+
+@media (max-width: 991.98px) {
+  body {
+    overflow-x: hidden;
+  }
+}
+
+/* ========================================
+   TOUCH TARGETS - Mejorar UX táctil
+   ======================================== */
+
+@media (hover: none) and (pointer: coarse) {
+  /* Aumentar área de click en dispositivos táctiles */
+  button,
+  a,
+  .btn,
+  .nav-link {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* ========================================
+   LOGIN RESPONSIVE
+   ======================================== */
+
+@media (max-width: 575.98px) {
+  .login-card {
+    max-width: 95%;
+    padding: 2rem 1.5rem !important;
+    margin: 1rem;
+  }
+  
+  .logo-circle {
+    width: 80px !important;
+    height: 80px !important;
+  }
+  
+  .company-name {
+    font-size: 1.5rem !important;
+  }
+  
+  .company-subtitle {
+    font-size: 0.8rem !important;
+  }
+  
+  .login-form input {
+    font-size: 0.9rem;
+  }
+  
+  .login-form .btn {
+    padding: 0.75rem !important;
+  }
+}
+
+/* ========================================
+   TABLAS MEJORADAS PARA MÓVIL
+   ======================================== */
+
+@media (max-width: 767.98px) {
+  /* Convertir tablas en cards en móvil */
+  .table-mobile-cards thead {
+    display: none;
+  }
+  
+  .table-mobile-cards tbody tr {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.02);
+  }
+  
+  .table-mobile-cards tbody td {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0 !important;
+    border: none !important;
+    text-align: right;
+  }
+  
+  .table-mobile-cards tbody td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    text-align: left;
+    padding-right: 1rem;
+  }
+}
+
+/* ========================================
+   NAVEGACIÓN HAMBURGER
+   ======================================== */
+
+.navbar-toggler {
+  border: none;
+  padding: 0.5rem;
+}
+
+.navbar-toggler:focus {
+  box-shadow: none;
+  outline: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+@media (max-width: 991.98px) {
+  .navbar-toggler {
+    display: block !important;
+  }
+}
+
+/* ========================================
+   MODALES RESPONSIVE
+   ======================================== */
+
+@media (max-width: 575.98px) {
+  .modal-dialog {
+    margin: 0.5rem;
+    max-width: calc(100% - 1rem);
+  }
+  
+  .modal-content {
+    border-radius: 0.5rem;
+  }
+  
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: 1rem;
+  }
+  
+  .modal-title {
+    font-size: 1.1rem;
+  }
+}
