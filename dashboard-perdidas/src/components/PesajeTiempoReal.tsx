@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
-import { Scale, CheckCircle, AlertTriangle, Usb, StopCircle, Save } from 'lucide-react';
+import { Scale, CheckCircle, AlertTriangle, Usb, StopCircle, Save, RotateCcw, Target } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 interface PesajeEnVivo {
   id: string;
@@ -54,6 +55,14 @@ const PesajeTiempoReal: React.FC = () => {
   const [mensaje, setMensaje] = useState('');
   const [tipoMensaje, setTipoMensaje] = useState<'success' | 'error' | 'info'>('info');
 
+  // Estados para gráfico en tiempo real
+  const [datosGrafico, setDatosGrafico] = useState<Array<{tiempo: string, peso: number, objetivo: number}>>([]);
+  const maxPuntosGrafico = 50; // Últimos 50 puntos
+
+  // Estados para configuración
+  const [mostrarConfigObjetivo, setMostrarConfigObjetivo] = useState(false);
+  const [nuevoObjetivo, setNuevoObjetivo] = useState('');
+
   // Verificar soporte Web Serial API
   const isSerialSupported = 'serial' in navigator;
 
@@ -84,6 +93,57 @@ const PesajeTiempoReal: React.FC = () => {
     } catch (error: any) {
       console.error('❌ Error conectando Arduino:', error);
       mostrarMensaje('error', 'Error al conectar Arduino: ' + error.message);
+    }
+  };
+
+  // Enviar comando al Arduino
+  const enviarComandoArduino = async (comando: string) => {
+    if (!port || !conectado) {
+      mostrarMensaje('error', 'Arduino no está conectado');
+      return false;
+    }
+
+    try {
+      const writer = port.writable?.getWriter();
+      if (writer) {
+        const encoder = new TextEncoder();
+        await writer.write(encoder.encode(comando + '\n'));
+        writer.releaseLock();
+        console.log('✅ Comando enviado:', comando);
+        return true;
+      }
+    } catch (error: any) {
+      console.error('❌ Error enviando comando:', error);
+      mostrarMensaje('error', 'Error enviando comando: ' + error.message);
+      return false;
+    }
+    return false;
+  };
+
+  // Hacer Tara (resetear peso a cero)
+  const hacerTara = async () => {
+    const exito = await enviarComandoArduino('TARE');
+    if (exito) {
+      mostrarMensaje('success', '✅ Tara realizada correctamente');
+      setPesoActual(0);
+      setDiferencia(0);
+    }
+  };
+
+  // Configurar peso objetivo
+  const configurarPesoObjetivo = async () => {
+    const objetivo = parseFloat(nuevoObjetivo);
+    if (isNaN(objetivo) || objetivo < 0) {
+      mostrarMensaje('error', 'Ingresa un peso objetivo válido');
+      return;
+    }
+
+    const exito = await enviarComandoArduino(`OBJ:${objetivo.toFixed(3)}`);
+    if (exito) {
+      setPesoObjetivo(objetivo);
+      setMostrarConfigObjetivo(false);
+      setNuevoObjetivo('');
+      mostrarMensaje('success', `✅ Peso objetivo configurado: ${objetivo} kg`);
     }
   };
 
@@ -285,7 +345,20 @@ const PesajeTiempoReal: React.FC = () => {
               
               // Forzar re-render para asegurar que la UI se actualice
               setActualizacionKey(prev => prev + 1);
-              
+
+              // Agregar punto al gráfico
+              setDatosGrafico(prev => {
+                const obj = parseFloat(jsonData.objetivo) || 0;
+                const nuevoPunto = {
+                  tiempo: ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+                  peso: peso,
+                  objetivo: obj
+                };
+                const nuevosDatos = [...prev, nuevoPunto];
+                // Mantener solo los últimos maxPuntosGrafico puntos
+                return nuevosDatos.slice(-maxPuntosGrafico);
+              });
+
               console.log(`✅ [${ahora.toLocaleTimeString()}] Peso: ${peso.toFixed(3)} kg | Obj: ${jsonData.objetivo || 0} kg | Dif: ${jsonData.diferencia || 0} kg`);
               return;
             }
@@ -527,7 +600,7 @@ const PesajeTiempoReal: React.FC = () => {
             {conectado ? '● Arduino Conectado' : '○ Desconectado'}
           </span>
           {!conectado ? (
-            <button 
+            <button
               className="btn btn-primary btn-sm"
               onClick={conectarArduino}
               disabled={!isSerialSupported}
@@ -536,16 +609,72 @@ const PesajeTiempoReal: React.FC = () => {
               Conectar Arduino
             </button>
           ) : (
-            <button 
-              className="btn btn-danger btn-sm"
-              onClick={desconectarArduino}
-            >
-              <StopCircle size={16} className="me-1" />
-              Desconectar
-            </button>
+            <>
+              <button
+                className="btn btn-warning btn-sm"
+                onClick={hacerTara}
+                title="Hacer tara (resetear peso a cero)"
+              >
+                <RotateCcw size={16} className="me-1" />
+                Tara
+              </button>
+              <button
+                className="btn btn-info btn-sm"
+                onClick={() => setMostrarConfigObjetivo(!mostrarConfigObjetivo)}
+                title="Configurar peso objetivo"
+              >
+                <Target size={16} className="me-1" />
+                Objetivo
+              </button>
+              <button
+                className="btn btn-danger btn-sm"
+                onClick={desconectarArduino}
+              >
+                <StopCircle size={16} className="me-1" />
+                Desconectar
+              </button>
+            </>
           )}
         </div>
       </div>
+
+      {/* Modal para configurar peso objetivo */}
+      {mostrarConfigObjetivo && conectado && (
+        <div className="card shadow mb-4 border-info">
+          <div className="card-body">
+            <h5 className="card-title text-info">
+              <Target size={20} className="me-2" />
+              Configurar Peso Objetivo
+            </h5>
+            <div className="row align-items-end">
+              <div className="col-md-8">
+                <label className="form-label">Peso objetivo (kg):</label>
+                <input
+                  type="number"
+                  step="0.001"
+                  className="form-control"
+                  placeholder="Ej: 50.000"
+                  value={nuevoObjetivo}
+                  onChange={(e) => setNuevoObjetivo(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      configurarPesoObjetivo();
+                    }
+                  }}
+                />
+              </div>
+              <div className="col-md-4">
+                <button
+                  className="btn btn-info w-100"
+                  onClick={configurarPesoObjetivo}
+                >
+                  Configurar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Mensaje de alerta/éxito */}
       {mensaje && (
@@ -785,6 +914,71 @@ const PesajeTiempoReal: React.FC = () => {
                     </ol>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Gráfico en Tiempo Real */}
+      {conectado && datosGrafico.length > 0 && (
+        <div className="row mb-4">
+          <div className="col-12">
+            <div className="card shadow">
+              <div className="card-header py-3" style={{ backgroundColor: '#F8F9FC', borderBottom: '1px solid #E3E6F0' }}>
+                <h6 className="m-0 font-weight-bold" style={{ color: '#0066cc', fontSize: '1rem', fontWeight: 700 }}>
+                  📊 Gráfico de Peso en Tiempo Real
+                </h6>
+              </div>
+              <div className="card-body" style={{ height: '350px' }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={datosGrafico}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                    <XAxis
+                      dataKey="tiempo"
+                      stroke="#5A5C69"
+                      tick={{ fontSize: 12 }}
+                      interval="preserveStartEnd"
+                    />
+                    <YAxis
+                      stroke="#5A5C69"
+                      tick={{ fontSize: 12 }}
+                      label={{ value: 'Peso (kg)', angle: -90, position: 'insideLeft' }}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: '#fff',
+                        border: '1px solid #ddd',
+                        borderRadius: '8px'
+                      }}
+                      formatter={(value: number) => [`${value.toFixed(3)} kg`, '']}
+                    />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="peso"
+                      stroke="#0066cc"
+                      strokeWidth={2}
+                      dot={{ r: 3 }}
+                      activeDot={{ r: 5 }}
+                      name="Peso Actual"
+                    />
+                    {pesoObjetivo > 0 && (
+                      <Line
+                        type="monotone"
+                        dataKey="objetivo"
+                        stroke="#28a745"
+                        strokeWidth={2}
+                        strokeDasharray="5 5"
+                        dot={false}
+                        name="Peso Objetivo"
+                      />
+                    )}
+                  </LineChart>
+                </ResponsiveContainer>
               </div>
             </div>
           </div>
