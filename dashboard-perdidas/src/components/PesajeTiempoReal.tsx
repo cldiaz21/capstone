@@ -26,7 +26,6 @@ const PesajeTiempoReal: React.FC = () => {
   // Estados de conexión Arduino
   const [port, setPort] = useState<SerialPort | null>(null);
   const [conectado, setConectado] = useState(false);
-  const [leyendo, setLeyendo] = useState(false);
   // reader puede devolver Uint8Array (desde serial) o string (si se usa TextDecoderStream).
   const readerRef = useRef<ReadableStreamDefaultReader<any> | null>(null);
   const leyendoRef = useRef<boolean>(false); // Ref para controlar el loop de lectura
@@ -93,7 +92,6 @@ const PesajeTiempoReal: React.FC = () => {
     try {
       // Detener el loop de lectura
       leyendoRef.current = false;
-      setLeyendo(false);
       
       if (readerRef.current) {
         try {
@@ -130,7 +128,6 @@ const PesajeTiempoReal: React.FC = () => {
   // Leer datos del Arduino de forma continua
   const iniciarLectura = async (serialPort: SerialPort) => {
     console.log('🚀 iniciarLectura() llamada');
-    setLeyendo(true);
     leyendoRef.current = true;
 
     // Usar el reader directamente y decodificar bytes a texto
@@ -203,7 +200,6 @@ const PesajeTiempoReal: React.FC = () => {
       }
     } finally {
       console.log('🧹 Limpiando recursos de lectura...');
-      setLeyendo(false);
       leyendoRef.current = false;
       
       try {
@@ -229,7 +225,7 @@ const PesajeTiempoReal: React.FC = () => {
 
   // Procesar datos del Arduino - función que se llama desde el loop de lectura
   // Esta función actualiza los estados para mostrar los datos en tiempo real
-  const procesarDatoArduinoRef = useRef<(data: string) => void>();
+  const procesarDatoArduinoRef = useRef<(data: string) => void>(() => {});
 
   // Inicializar la función de procesamiento
   useEffect(() => {
