@@ -37,10 +37,29 @@ function App() {
 
   useEffect(() => {
     // Verificar sesión actual
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setLoading(false);
-    });
+    supabase.auth.getSession()
+      .then(({ data: { session }, error }) => {
+        if (error) {
+          console.error('Error obteniendo sesión:', error);
+          // Si hay error de red/CORS, limpiar sesión local
+          if (error.message?.includes('Failed to fetch') ||
+              error.message?.includes('NetworkError') ||
+              error.message?.includes('CORS')) {
+            localStorage.removeItem('supabase.auth.token');
+            setSession(null);
+          }
+        } else {
+          setSession(session);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error('Error de conexión:', err);
+        // Limpiar sesión si hay error de red
+        localStorage.clear();
+        setSession(null);
+        setLoading(false);
+      });
 
     // Escuchar cambios de autenticación
     const {

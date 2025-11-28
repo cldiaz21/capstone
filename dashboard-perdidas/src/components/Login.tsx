@@ -29,7 +29,18 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
         onLoginSuccess();
       }
     } catch (error: any) {
-      setError(error.message || 'Error al iniciar sesión');
+      console.error('Error de login:', error);
+
+      // Mensajes de error más útiles
+      if (error.message?.includes('Failed to fetch') ||
+          error.message?.includes('NetworkError') ||
+          error.message?.includes('CORS')) {
+        setError('Error de conexión con el servidor. Verifica tu conexión a internet o contacta al administrador.');
+      } else if (error.message?.includes('Invalid login credentials')) {
+        setError('Correo o contraseña incorrectos');
+      } else {
+        setError(error.message || 'Error al iniciar sesión');
+      }
     } finally {
       setLoading(false);
     }
