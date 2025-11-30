@@ -26,7 +26,7 @@ interface Fabrica {
 const PesajeTiempoReal: React.FC = () => {
   // Estados de conexión Arduino
   const [port, setPort] = useState<SerialPort | null>(null);
-  const [conectado, setConectado] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState<'disconnected' | 'connecting' | 'connected' | 'error'>('disconnected');
   // reader puede devolver Uint8Array (desde serial) o string (si se usa TextDecoderStream).
   const readerRef = useRef<ReadableStreamDefaultReader<any> | null>(null);
   const leyendoRef = useRef<boolean>(false); // Ref para controlar el loop de lectura
@@ -69,11 +69,13 @@ const PesajeTiempoReal: React.FC = () => {
   // Conectar Arduino
   const conectarArduino = async () => {
     console.log('🎬 conectarArduino() llamada - iniciando conexión...');
+    setConnectionStatus('connecting');
     
     try {
       if (!isSerialSupported) {
         console.error('❌ Navegador no soporta Web Serial API');
         mostrarMensaje('error', 'Tu navegador no soporta Web Serial API. Usa Chrome o Edge.');
+        setConnectionStatus('error');
         return;
       }
 
@@ -84,7 +86,7 @@ const PesajeTiempoReal: React.FC = () => {
       console.log('✅ Puerto abierto exitosamente');
       
       setPort(selectedPort);
-      setConectado(true);
+      setConnectionStatus('connected');
       mostrarMensaje('success', '✅ Arduino conectado correctamente');
       
       console.log('📖 Iniciando lectura de datos...');
@@ -93,12 +95,13 @@ const PesajeTiempoReal: React.FC = () => {
     } catch (error: any) {
       console.error('❌ Error conectando Arduino:', error);
       mostrarMensaje('error', 'Error al conectar Arduino: ' + error.message);
+      setConnectionStatus('error');
     }
   };
 
   // Enviar comando al Arduino
   const enviarComandoArduino = async (comando: string) => {
-    if (!port || !conectado) {
+    if (!port || connectionStatus !== 'connected') {
       mostrarMensaje('error', 'Arduino no está conectado');
       return false;
     }
@@ -176,12 +179,13 @@ const PesajeTiempoReal: React.FC = () => {
         setPort(null);
       }
       
-      setConectado(false);
+      setConnectionStatus('disconnected');
       setDatosRecibidos(false);
       mostrarMensaje('info', 'Arduino desconectado');
     } catch (error: any) {
       console.error('Error desconectando:', error);
       mostrarMensaje('error', 'Error al desconectar: ' + error.message);
+      setConnectionStatus('error');
     }
   };
 
@@ -204,16 +208,20 @@ const PesajeTiempoReal: React.FC = () => {
     const leerContinuamente = async () => {
       while (leyendoRef.current) {
         try {
+          console.log('⏳ Esperando datos del reader...');
           const { value, done } = await reader.read();
           
           if (done) {
             console.log('⚠️ Stream terminado');
+            leyendoRef.current = false;
             break;
           }
 
           if (value && value.length > 0) {
+            console.log('📦 Datos crudos recibidos (Uint8Array):', value);
             // Decodificar bytes a texto
             const chunk = decoder.decode(value, { stream: true });
+            console.log('📜 Chunk decodificado:', chunk);
             buffer += chunk;
 
             // Procesar todas las líneas completas
@@ -226,13 +234,15 @@ const PesajeTiempoReal: React.FC = () => {
               const trimmedLine = line.trim();
               if (trimmedLine) {
                 lineCount++;
-                console.log(`📨 [${lineCount}] Recibido:`, trimmedLine.substring(0, 100));
+                console.log(`📨 [${lineCount}] Procesando línea:`, trimmedLine.substring(0, 100));
                 // Llamar a la función de procesamiento usando la ref
                 if (procesarDatoArduinoRef.current) {
                   procesarDatoArduinoRef.current(trimmedLine);
                 }
               }
             }
+          } else {
+            console.log('텅 Valor vacío recibido del reader');
           }
         } catch (readError: any) {
           // Si el error es por cancelación, salir
@@ -244,10 +254,13 @@ const PesajeTiempoReal: React.FC = () => {
             break;
           }
           console.error('❌ Error en lectura:', readError);
-          // Continuar leyendo incluso si hay un error
-          await new Promise(resolve => setTimeout(resolve, 100));
+          leyendoRef.current = false; // Detener el loop en caso de error inesperado
+          setConnectionStatus('error');
+          mostrarMensaje('error', 'Error de lectura: ' + readError.message);
+          break; // Salir del loop
         }
       }
+      console.log('🛑 Loop de lectura terminado.');
     };
 
     // Iniciar lectura continua
@@ -460,7 +473,7 @@ const PesajeTiempoReal: React.FC = () => {
 
   // Efecto para actualizar tiempo transcurrido y verificar recepción de datos
   useEffect(() => {
-    if (!conectado) return;
+    if (connectionStatus !== 'connected') return;
 
     const interval = setInterval(() => {
       if (ultimaLectura) {
@@ -474,14 +487,14 @@ const PesajeTiempoReal: React.FC = () => {
           // Si recibimos datos recientemente, marcar como recibidos
           setDatosRecibidos(true);
         }
-      } else if (conectado) {
+      } else if (connectionStatus === 'connected') {
         // Si estamos conectados pero nunca recibimos datos, mantener el estado
         setDatosRecibidos(false);
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [conectado, ultimaLectura]);
+  }, [connectionStatus, ultimaLectura]);
 
   // Calcular estado basado en peso objetivo y diferencia (usar tolerancia del Arduino: 0.005 kg = 5g)
   const calcularEstado = () => {
@@ -586,27 +599,35 @@ const PesajeTiempoReal: React.FC = () => {
           Pesaje en Tiempo Real
         </h1>
         <div className="d-flex align-items-center gap-2 flex-wrap">
-          {conectado && datosRecibidos && (
+          {connectionStatus === 'connected' && datosRecibidos && (
             <span className="badge bg-info">
               📡 Datos recibidos {formatearTiempoTranscurrido()}
             </span>
           )}
-          {conectado && !datosRecibidos && (
+          {connectionStatus === 'connected' && !datosRecibidos && (
             <span className="badge bg-warning text-dark">
               ⚠️ Esperando datos...
             </span>
           )}
-          <span className={`badge ${conectado ? 'bg-success' : 'bg-secondary'}`}>
-            {conectado ? '● Arduino Conectado' : '○ Desconectado'}
+          <span
+            className={`badge ${
+              connectionStatus === 'connected' ? 'bg-success' :
+              connectionStatus === 'connecting' ? 'bg-warning text-dark' :
+              connectionStatus === 'error' ? 'bg-danger' : 'bg-secondary'
+            }`}
+          >
+            {connectionStatus === 'connected' ? '● Conectado' :
+             connectionStatus === 'connecting' ? '● Conectando...' :
+             connectionStatus === 'error' ? '● Error' : '○ Desconectado'}
           </span>
-          {!conectado ? (
+          {connectionStatus !== 'connected' ? (
             <button
               className="btn btn-primary btn-sm"
               onClick={conectarArduino}
-              disabled={!isSerialSupported}
+              disabled={!isSerialSupported || connectionStatus === 'connecting'}
             >
               <Usb size={16} className="me-1" />
-              Conectar Arduino
+              {connectionStatus === 'connecting' ? 'Conectando...' : 'Conectar Arduino'}
             </button>
           ) : (
             <>
@@ -639,7 +660,7 @@ const PesajeTiempoReal: React.FC = () => {
       </div>
 
       {/* Modal para configurar peso objetivo */}
-      {mostrarConfigObjetivo && conectado && (
+      {mostrarConfigObjetivo && connectionStatus === 'connected' && (
         <div className="card shadow mb-4 border-info">
           <div className="card-body">
             <h5 className="card-title text-info">
@@ -692,7 +713,7 @@ const PesajeTiempoReal: React.FC = () => {
       )}
 
       {/* Panel de Pesaje Principal */}
-      {conectado ? (
+      {connectionStatus === 'connected' ? (
         <div className="row mb-4">
           {/* Peso Actual en Grande */}
           <div className="col-lg-6 mb-4">
@@ -848,7 +869,7 @@ const PesajeTiempoReal: React.FC = () => {
                           </p>
                         </>
                       )}
-                      {!datosRecibidos && conectado && (
+                      {!datosRecibidos && connectionStatus === 'connected' && (
                         <p className="mb-0 small text-muted">
                           ⚠️ Esperando datos del Arduino...
                         </p>
@@ -921,7 +942,7 @@ const PesajeTiempoReal: React.FC = () => {
       )}
 
       {/* Gráfico en Tiempo Real */}
-      {conectado && datosGrafico.length > 0 && (
+      {connectionStatus === 'connected' && datosGrafico.length > 0 && (
         <div className="row mb-4">
           <div className="col-12">
             <div className="card shadow">
