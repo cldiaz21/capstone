@@ -315,7 +315,16 @@ const PesajeTiempoReal: React.FC = () => {
 
       console.log('📥 Procesando datos:', trimmedData.substring(0, 80));
       
-      // 🔧 DETECCIÓN DE MENSAJES DE CALIBRACIÓN DEL ARDUINO
+      // Ignorar mensajes informativos del Arduino
+      if (trimmedData === 'HEARTBEAT' || 
+          trimmedData === 'Arduino listo.' ||
+          trimmedData.startsWith('Nuevo objetivo:') ||
+          trimmedData === 'Tara realizada') {
+        console.log('ℹ️ Mensaje informativo:', trimmedData);
+        return;
+      }
+      
+      // 🔧 DETECCIÓN DE MENSAJES DE CALIBRACIÓN (OPCIONAL - solo si tu Arduino los envía)
       // Detectar si Arduino está pidiendo peso conocido
       if (trimmedData.toLowerCase().includes('peso conocido') || 
           trimmedData.toLowerCase().includes('ingrese el peso') ||
@@ -459,15 +468,33 @@ const PesajeTiempoReal: React.FC = () => {
         // Si no es JSON, intentar formato texto: OBJ:X;ACT:X;DIF:X
         const textMatch = trimmedData.match(/OBJ:([-\d.]+);ACT:([-\d.]+);DIF:([-\d.]+)/);
         if (textMatch) {
+          const ahora = new Date();
           const objetivo = parseFloat(textMatch[1]) || 0;
           const actual = parseFloat(textMatch[2]) || 0;
-          const diferencia = parseFloat(textMatch[3]) || 0;
+          const dif = parseFloat(textMatch[3]) || 0;
           
           setPesoObjetivo(objetivo);
           setPesoActual(actual);
-          setDiferencia(diferencia);
+          setDiferencia(dif);
           setDatosRecibidos(true);
-          setUltimaLectura(new Date());
+          setUltimaLectura(ahora);
+          ultimaActualizacionRef.current = ahora;
+          
+          // Forzar re-render
+          setActualizacionKey(prev => prev + 1);
+          
+          // Agregar punto al gráfico
+          setDatosGrafico(prev => {
+            const nuevoPunto = {
+              tiempo: ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+              peso: actual,
+              objetivo: objetivo
+            };
+            const nuevosDatos = [...prev, nuevoPunto];
+            return nuevosDatos.slice(-maxPuntosGrafico);
+          });
+          
+          console.log(`⚖️ [${ahora.toLocaleTimeString()}] Peso: ${actual.toFixed(3)} kg | Obj: ${objetivo.toFixed(3)} kg | Dif: ${dif.toFixed(3)} kg`);
           return;
         }
         
