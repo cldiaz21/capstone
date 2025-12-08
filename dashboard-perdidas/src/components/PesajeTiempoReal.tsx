@@ -32,6 +32,13 @@ const PesajeTiempoReal: React.FC = () => {
   const leyendoRef = useRef<boolean>(false); // Ref para controlar el loop de lectura
   const ultimaActualizacionRef = useRef<Date>(new Date());
   
+  // Estados para calibración interactiva del Arduino
+  const [modoCalibacion, setModoCalibacion] = useState(false);
+  const [esperandoPesoConocido, setEsperandoPesoConocido] = useState(false);
+  const [esperandoConfirmacion, setEsperandoConfirmacion] = useState(false);
+  const [pesoConocidoInput, setPesoConocidoInput] = useState('');
+  const [mensajeArduino, setMensajeArduino] = useState('');
+  
   // Estados de datos del pesaje
   const [pesoActual, setPesoActual] = useState(0);
   const [pesoObjetivo, setPesoObjetivo] = useState(0);
@@ -308,6 +315,45 @@ const PesajeTiempoReal: React.FC = () => {
 
       console.log('📥 Procesando datos:', trimmedData.substring(0, 80));
       
+      // 🔧 DETECCIÓN DE MENSAJES DE CALIBRACIÓN DEL ARDUINO
+      // Detectar si Arduino está pidiendo peso conocido
+      if (trimmedData.toLowerCase().includes('peso conocido') || 
+          trimmedData.toLowerCase().includes('ingrese el peso') ||
+          trimmedData.toLowerCase().includes('cual es el peso')) {
+        console.log('⚙️ Arduino solicita peso conocido');
+        setModoCalibacion(true);
+        setEsperandoPesoConocido(true);
+        setEsperandoConfirmacion(false);
+        setMensajeArduino(trimmedData);
+        return;
+      }
+      
+      // Detectar si Arduino está pidiendo confirmación "ok"
+      if (trimmedData.toLowerCase().includes('escribir ok') ||
+          trimmedData.toLowerCase().includes('escriba ok') ||
+          trimmedData.toLowerCase().includes('ingrese ok')) {
+        console.log('✅ Arduino solicita confirmación OK');
+        setModoCalibacion(true);
+        setEsperandoPesoConocido(false);
+        setEsperandoConfirmacion(true);
+        setMensajeArduino(trimmedData);
+        return;
+      }
+      
+      // Detectar si la calibración terminó
+      if (trimmedData.toLowerCase().includes('calibracion completa') ||
+          trimmedData.toLowerCase().includes('calibración completa') ||
+          trimmedData.toLowerCase().includes('listo para pesar') ||
+          trimmedData.toLowerCase().includes('iniciando pesaje')) {
+        console.log('🎉 Calibración completada');
+        setModoCalibacion(false);
+        setEsperandoPesoConocido(false);
+        setEsperandoConfirmacion(false);
+        setMensajeArduino('Calibración completada ✅');
+        setTimeout(() => setMensajeArduino(''), 3000);
+        return;
+      }
+      
       try {
         // Intentar parsear JSON completo primero (formato que envía el Arduino)
         // El Arduino envía: {"peso":X,"objetivo":X,"diferencia":X,"codigo_saco":"...","fabrica":"...","timestamp":X}
@@ -575,6 +621,34 @@ const PesajeTiempoReal: React.FC = () => {
     }
   };
 
+  // 🔧 FUNCIONES DE CALIBRACIÓN INTERACTIVA
+  // Enviar peso conocido al Arduino
+  const enviarPesoConocido = async () => {
+    const peso = parseFloat(pesoConocidoInput);
+    if (isNaN(peso) || peso <= 0) {
+      mostrarMensaje('error', 'Ingresa un peso válido mayor a 0');
+      return;
+    }
+
+    const exito = await enviarComandoArduino(peso.toFixed(3));
+    if (exito) {
+      console.log(`📤 Peso conocido enviado: ${peso} kg`);
+      setPesoConocidoInput('');
+      setEsperandoPesoConocido(false);
+      mostrarMensaje('success', `Peso enviado: ${peso} kg. Esperando confirmación del Arduino...`);
+    }
+  };
+
+  // Enviar confirmación "ok" al Arduino
+  const enviarConfirmacion = async () => {
+    const exito = await enviarComandoArduino('ok');
+    if (exito) {
+      console.log('✅ Confirmación OK enviada');
+      setEsperandoConfirmacion(false);
+      mostrarMensaje('success', 'Confirmación enviada. Iniciando pesaje...');
+    }
+  };
+
   // Mostrar mensaje temporal
   const mostrarMensaje = (tipo: 'success' | 'error' | 'info', texto: string) => {
     setTipoMensaje(tipo);
@@ -659,8 +733,72 @@ const PesajeTiempoReal: React.FC = () => {
         </div>
       </div>
 
+      {/* Modal de Calibración Interactiva */}
+      {modoCalibacion && connectionStatus === 'connected' && (
+        <div className="card shadow mb-4 border-warning" style={{ borderWidth: '3px' }}>
+          <div className="card-body">
+            <h5 className="card-title text-warning">
+              ⚙️ Calibración del Arduino
+            </h5>
+            
+            {mensajeArduino && (
+              <div className="alert alert-info mb-3">
+                <strong>Arduino dice:</strong> {mensajeArduino}
+              </div>
+            )}
+
+            {/* Esperando peso conocido */}
+            {esperandoPesoConocido && (
+              <div>
+                <p className="mb-3">El Arduino solicita que ingreses un <strong>peso conocido</strong> para calibración.</p>
+                <div className="row align-items-end">
+                  <div className="col-md-8">
+                    <label className="form-label">Peso conocido (kg):</label>
+                    <input
+                      type="number"
+                      step="0.001"
+                      className="form-control form-control-lg"
+                      placeholder="Ej: 5.250"
+                      value={pesoConocidoInput}
+                      onChange={(e) => setPesoConocidoInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          enviarPesoConocido();
+                        }
+                      }}
+                      autoFocus
+                    />
+                  </div>
+                  <div className="col-md-4">
+                    <button
+                      className="btn btn-warning w-100 btn-lg"
+                      onClick={enviarPesoConocido}
+                    >
+                      📤 Enviar Peso
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Esperando confirmación "ok" */}
+            {esperandoConfirmacion && (
+              <div className="text-center">
+                <p className="mb-3">El Arduino solicita <strong>confirmación</strong> para continuar.</p>
+                <button
+                  className="btn btn-success btn-lg px-5"
+                  onClick={enviarConfirmacion}
+                >
+                  ✅ Confirmar (OK)
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Modal para configurar peso objetivo */}
-      {mostrarConfigObjetivo && connectionStatus === 'connected' && (
+      {mostrarConfigObjetivo && connectionStatus === 'connected' && !modoCalibacion && (
         <div className="card shadow mb-4 border-info">
           <div className="card-body">
             <h5 className="card-title text-info">

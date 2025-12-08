@@ -72,25 +72,29 @@ void setup() {
   // - Serial (9600 baud)
   // - HX711 con calibración
   // - LCD I2C
+  // - Puede solicitar calibración interactiva (opcional)
 }
 
 void loop() {
   // 1. Lee comando serial
-  // 2. Ejecuta acción (OBJ, TARE)
+  // 2. Ejecuta acción (OBJ, TARE, calibración)
   // 3. Lee peso actual
-  // 4. Envía JSON por serial
+  // 4. Envía datos por serial
 }
 
 // Protocolo de comunicación:
 // OUT: "OBJ:5.250;ACT:5.380;DIF:0.130\n"
+// IN:  "TARE" | "OBJ:X.XXX" | "[peso conocido]" | "ok"
 ```
 
 **Características:**
 - ✅ Calibración precisa (±1g)
+- ✅ Calibración interactiva desde dashboard
 - ✅ Promedio de 10 lecturas
 - ✅ Auto-tara con comando
 - ✅ Display LCD en tiempo real
-- ✅ Protocolo JSON simple
+- ✅ Protocolo simple y extensible
+- ✅ Detección automática de mensajes de setup
 
 ---
 
@@ -409,25 +413,31 @@ useEffect(() => {
 }, [])
 ```
 
-**SacosNuevo.tsx** (Vista Principal):
+**PesajeTiempoReal.tsx** (Vista de Pesaje con Arduino):
 ```typescript
-// Muestra tabla con:
-// - Código del saco
-// - Pedido asociado
-// - Fábrica
-// - Peso objetivo vs peso real
-// - Diferencia (con color: verde OK, rojo FUERA_RANGO)
-// - Fecha de pesaje
-// - Acciones (ver detalle, exportar)
+// Conexión directa con Arduino via Web Serial API
 
-// Features:
-// ✅ Búsqueda por código
-// ✅ Filtro por fecha
-// ✅ Filtro por estado
-// ✅ Ordenamiento por columna
-// ✅ Paginación
-// ✅ Exportar a CSV
-// ✅ Actualización en tiempo real
+// Features principales:
+// ✅ Conexión Arduino USB (Web Serial API)
+// ✅ Calibración interactiva automática
+// ✅ Detección de mensajes del Arduino
+// ✅ Peso en tiempo real (actualización 500ms)
+// ✅ Comandos: TARE, OBJ:X.XXX
+// ✅ Gráfico en vivo (últimos 50 puntos)
+// ✅ Selección de fábrica y número de saco
+// ✅ Guardar pesaje en Supabase
+// ✅ Historial de últimos 10 pesajes
+
+// Calibración interactiva:
+// 1. Detecta "peso conocido" → Muestra input
+// 2. Envía valor al Arduino
+// 3. Detecta "escribir ok" → Muestra botón
+// 4. Envía "ok" al Arduino
+// 5. Calibración completa → Continúa pesaje normal
+
+// Protocolo Arduino:
+// Entrada: "TARE", "OBJ:X.XXX", "[peso]", "ok"
+// Salida: "OBJ:X.XXX;ACT:X.XXX;DIF:X.XXX"
 ```
 
 **LanguageContext.tsx** (Multilenguaje):
