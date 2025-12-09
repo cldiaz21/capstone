@@ -48,67 +48,83 @@ const Reportes: React.FC = () => {
 
       switch (config.tipo) {
         case 'pedidos': {
-          const { data: pedidos } = await supabase
+          const { data: pedidos, error } = await supabase
             .from('pedidos')
             .select('*, fabricas(nombre)')
             .gte('fecha_llegada', config.fechaInicio)
             .lte('fecha_llegada', config.fechaFin)
             .order('fecha_llegada', { ascending: false });
           
+          if (error) {
+            console.error('Error cargando pedidos:', error);
+            throw new Error('Error cargando pedidos: ' + error.message);
+          }
+          
           datos = (pedidos || []).map(p => ({
             'Fecha Llegada': p.fecha_llegada,
             'Fábrica': p.fabricas?.nombre || '',
-            'Código': p.codigo,
-            'Cantidad Pedidos': p.cantidad_pedidos,
-            'Cantidad Recibidos': p.cantidad_recibidos,
-            'Cantidad Sacos': p.cantidad_sacos,
-            'Ratio R/P': p.ratio_rp.toFixed(2) + '%',
-            'Tipo Lista': p.tipo_lista
+            'Código': p.codigo || '',
+            'Cantidad Pedidos': p.cantidad_pedidos || 0,
+            'Cantidad Recibidos': p.cantidad_recibidos || 0,
+            'Cantidad Sacos': p.cantidad_sacos || 0,
+            'Ratio R/P': (p.ratio_rp || 0).toFixed(2) + '%',
+            'Tipo Lista': p.tipo_lista || ''
           }));
           nombreReporte = `Reporte_Pedidos_${config.fechaInicio}_a_${config.fechaFin}`;
           break;
         }
 
-        case 'perdidas':
-          const { data: perdidas } = await supabase
+        case 'perdidas': {
+          const { data: perdidas, error } = await supabase
             .from('perdidas')
             .select('*, fabricas(nombre)')
             .gte('fecha', config.fechaInicio)
             .lte('fecha', config.fechaFin)
             .order('fecha', { ascending: false });
           
+          if (error) {
+            console.error('Error cargando pérdidas:', error);
+            throw new Error('Error cargando pérdidas: ' + error.message);
+          }
+          
           datos = (perdidas || []).map(p => ({
             'Fecha': p.fecha,
             'Fábrica': p.fabricas?.nombre || '',
-            'Cantidad Perdida': p.cantidad_perdida,
-            '% Pérdida': p.porcentaje_perdida.toFixed(2) + '%',
-            'Valor Estimado': '$' + p.valor_estimado.toLocaleString(),
-            'Tipo': p.tipo
+            'Cantidad Perdida': p.cantidad_perdida || 0,
+            '% Pérdida': (p.porcentaje_perdida || 0).toFixed(2) + '%',
+            'Valor Estimado': '$' + (p.valor_estimado || 0).toLocaleString(),
+            'Tipo': p.tipo || ''
           }));
           nombreReporte = `Reporte_Perdidas_${config.fechaInicio}_a_${config.fechaFin}`;
           break;
+        }
 
-        case 'fabricas':
-          const { data: estadisticas } = await supabase
-            .from('estadisticas_fabricas')
-            .select('*');
+        case 'fabricas': {
+          const { data: fabricasData, error } = await supabase
+            .from('fabricas')
+            .select('*')
+            .eq('activa', true);
           
-          datos = (estadisticas || []).map(f => ({
-            'Fábrica': f.nombre_fabrica,
-            'Tipo': f.tipo,
-            'Total Pedidos': f.total_pedidos,
-            'Total Recibidos': f.total_recibidos,
-            'Total Sacos': f.total_sacos,
-            '% Pérdida Promedio': f.promedio_ratio.toFixed(2) + '%',
-            'Pérdida Total': f.perdida_total
+          if (error) {
+            console.error('Error cargando fábricas:', error);
+            throw new Error('Error cargando fábricas: ' + error.message);
+          }
+          
+          datos = (fabricasData || []).map(f => ({
+            'Fábrica': f.nombre,
+            'Tipo': f.tipo || '',
+            'Código': f.codigo || '',
+            'Ubicación': f.ubicacion || '',
+            'Estado': f.activa ? 'Activa' : 'Inactiva'
           }));
           nombreReporte = `Reporte_Fabricas_${new Date().toISOString().split('T')[0]}`;
           break;
+        }
 
-        case 'sacos':
+        case 'sacos': {
           let querySacos = supabase
             .from('sacos')
-            .select('*, fabricas(nombre), pedidos(codigo)')
+            .select('*, fabricas(nombre)')
             .order('fecha_pesaje', { ascending: false });
 
           if (config.fechaInicio && config.fechaFin) {
@@ -117,78 +133,115 @@ const Reportes: React.FC = () => {
               .lte('fecha_pesaje', config.fechaFin);
           }
 
-          const { data: sacos } = await querySacos;
+          const { data: sacos, error } = await querySacos;
+          
+          if (error) {
+            console.error('Error cargando sacos:', error);
+            throw new Error('Error cargando sacos: ' + error.message);
+          }
           
           datos = (sacos || []).map(s => ({
             'Código Saco': s.codigo,
             'Fábrica': s.fabricas?.nombre || '',
-            'Pedido': s.pedidos?.codigo || '',
-            'Peso Objetivo (kg)': s.peso_objetivo,
-            'Peso Real (kg)': s.peso_real,
-            'Diferencia (kg)': s.diferencia,
+            'Peso Objetivo (kg)': s.peso_objetivo || 0,
+            'Peso Real (kg)': s.peso_real || 0,
+            'Diferencia (kg)': s.diferencia || 0,
             'Estado': s.estado,
-            'Fecha Pesaje': s.fecha_pesaje,
-            'Lote': s.lote
+            'Fecha Pesaje': new Date(s.fecha_pesaje).toLocaleString('es-CL'),
+            'Lote': s.lote || ''
           }));
           nombreReporte = `Reporte_Sacos_${config.fechaInicio}_a_${config.fechaFin}`;
           break;
+        }
 
-        case 'consolidado':
+        case 'consolidado': {
           // Reporte consolidado con todas las tablas
-          const { data: pedidosC } = await supabase
+          const { data: pedidosC, error: errorP } = await supabase
             .from('pedidos')
             .select('*, fabricas(nombre)')
             .gte('fecha_llegada', config.fechaInicio)
             .lte('fecha_llegada', config.fechaFin);
 
-          const { data: perdidasC } = await supabase
+          const { data: perdidasC, error: errorPer } = await supabase
             .from('perdidas')
             .select('*, fabricas(nombre)')
             .gte('fecha', config.fechaInicio)
             .lte('fecha', config.fechaFin);
 
-          const { data: estadisticasC } = await supabase
-            .from('estadisticas_fabricas')
-            .select('*');
+          const { data: sacosC, error: errorS } = await supabase
+            .from('sacos')
+            .select('*, fabricas(nombre)')
+            .gte('fecha_pesaje', config.fechaInicio)
+            .lte('fecha_pesaje', config.fechaFin);
+
+          const { data: fabricasC, error: errorF } = await supabase
+            .from('fabricas')
+            .select('*')
+            .eq('activa', true);
+
+          if (errorP || errorPer || errorS || errorF) {
+            const errores = [errorP, errorPer, errorS, errorF].filter(e => e).map(e => e!.message).join(', ');
+            throw new Error('Error cargando datos: ' + errores);
+          }
 
           // Crear workbook con múltiples hojas
           const wb = XLSX.utils.book_new();
 
           // Hoja Pedidos
-          const datosPedidos = (pedidosC || []).map(p => ({
-            'Fecha': p.fecha_llegada,
-            'Fábrica': p.fabricas?.nombre || '',
-            'Código': p.codigo,
-            'Pedidos': p.cantidad_pedidos,
-            'Recibidos': p.cantidad_recibidos,
-            'Sacos': p.cantidad_sacos,
-            'Ratio': p.ratio_rp.toFixed(2) + '%'
-          }));
-          const wsPedidos = XLSX.utils.json_to_sheet(datosPedidos);
-          XLSX.utils.book_append_sheet(wb, wsPedidos, 'Pedidos');
+          if (pedidosC && pedidosC.length > 0) {
+            const datosPedidos = pedidosC.map(p => ({
+              'Fecha': p.fecha_llegada,
+              'Fábrica': p.fabricas?.nombre || '',
+              'Código': p.codigo || '',
+              'Pedidos': p.cantidad_pedidos || 0,
+              'Recibidos': p.cantidad_recibidos || 0,
+              'Sacos': p.cantidad_sacos || 0,
+              'Ratio': (p.ratio_rp || 0).toFixed(2) + '%'
+            }));
+            const wsPedidos = XLSX.utils.json_to_sheet(datosPedidos);
+            XLSX.utils.book_append_sheet(wb, wsPedidos, 'Pedidos');
+          }
 
           // Hoja Pérdidas
-          const datosPerdidas = (perdidasC || []).map(p => ({
-            'Fecha': p.fecha,
-            'Fábrica': p.fabricas?.nombre || '',
-            'Cantidad': p.cantidad_perdida,
-            'Porcentaje': p.porcentaje_perdida.toFixed(2) + '%',
-            'Valor': '$' + p.valor_estimado.toLocaleString()
-          }));
-          const wsPerdidas = XLSX.utils.json_to_sheet(datosPerdidas);
-          XLSX.utils.book_append_sheet(wb, wsPerdidas, 'Pérdidas');
+          if (perdidasC && perdidasC.length > 0) {
+            const datosPerdidas = perdidasC.map(p => ({
+              'Fecha': p.fecha,
+              'Fábrica': p.fabricas?.nombre || '',
+              'Cantidad': p.cantidad_perdida || 0,
+              'Porcentaje': (p.porcentaje_perdida || 0).toFixed(2) + '%',
+              'Valor': '$' + (p.valor_estimado || 0).toLocaleString()
+            }));
+            const wsPerdidas = XLSX.utils.json_to_sheet(datosPerdidas);
+            XLSX.utils.book_append_sheet(wb, wsPerdidas, 'Pérdidas');
+          }
+
+          // Hoja Sacos
+          if (sacosC && sacosC.length > 0) {
+            const datosSacos = sacosC.map(s => ({
+              'Código': s.codigo,
+              'Fábrica': s.fabricas?.nombre || '',
+              'Peso Objetivo': s.peso_objetivo || 0,
+              'Peso Real': s.peso_real || 0,
+              'Diferencia': s.diferencia || 0,
+              'Estado': s.estado,
+              'Fecha': new Date(s.fecha_pesaje).toLocaleDateString('es-CL')
+            }));
+            const wsSacos = XLSX.utils.json_to_sheet(datosSacos);
+            XLSX.utils.book_append_sheet(wb, wsSacos, 'Sacos');
+          }
 
           // Hoja Fábricas
-          const datosFabricas = (estadisticasC || []).map(f => ({
-            'Fábrica': f.nombre_fabrica,
-            'Tipo': f.tipo,
-            'Pedidos': f.total_pedidos,
-            'Recibidos': f.total_recibidos,
-            'Sacos': f.total_sacos,
-            'Pérdida %': f.promedio_ratio.toFixed(2) + '%'
-          }));
-          const wsFabricas = XLSX.utils.json_to_sheet(datosFabricas);
-          XLSX.utils.book_append_sheet(wb, wsFabricas, 'Fábricas');
+          if (fabricasC && fabricasC.length > 0) {
+            const datosFabricas = fabricasC.map(f => ({
+              'Fábrica': f.nombre,
+              'Tipo': f.tipo || '',
+              'Código': f.codigo || '',
+              'Ubicación': f.ubicacion || '',
+              'Estado': f.activa ? 'Activa' : 'Inactiva'
+            }));
+            const wsFabricas = XLSX.utils.json_to_sheet(datosFabricas);
+            XLSX.utils.book_append_sheet(wb, wsFabricas, 'Fábricas');
+          }
 
           // Descargar
           XLSX.writeFile(wb, `Reporte_Consolidado_${config.fechaInicio}_a_${config.fechaFin}.xlsx`);
@@ -196,6 +249,7 @@ const Reportes: React.FC = () => {
           setGenerando(false);
           alert('¡Reporte consolidado generado exitosamente!');
           return; // Exit early para consolidado
+        }
       }
 
       // Para reportes simples (no consolidado)

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
-import { Scale, CheckCircle, AlertTriangle, Usb, StopCircle, Save, RotateCcw, Target } from 'lucide-react';
+import { Scale, CheckCircle, AlertTriangle, Usb, StopCircle, Save, RotateCcw, Target, Download } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import * as XLSX from 'xlsx';
 
 interface PesajeEnVivo {
   id: string;
@@ -625,6 +626,17 @@ const PesajeTiempoReal: React.FC = () => {
       // Agregar al historial local
       setHistorialPesajes(prev => [data, ...prev.slice(0, 9)]);
       
+      // Recargar historial completo desde la base de datos
+      const { data: historialActualizado } = await supabase
+        .from('sacos')
+        .select('*')
+        .order('fecha_pesaje', { ascending: false })
+        .limit(10);
+      
+      if (historialActualizado) {
+        setHistorialPesajes(historialActualizado);
+      }
+      
       // Reiniciar después de 2 segundos
       setTimeout(() => {
         setNumeroSaco('');
@@ -678,6 +690,32 @@ const PesajeTiempoReal: React.FC = () => {
       minute: '2-digit',
       second: '2-digit'
     });
+  };
+
+  // Descargar Excel de últimos 10 pesajes
+  const descargarExcelHistorial = () => {
+    if (historialPesajes.length === 0) {
+      mostrarMensaje('error', 'No hay pesajes para descargar');
+      return;
+    }
+
+    const datosExcel = historialPesajes.map(p => ({
+      'Código Saco': p.codigo,
+      'Peso Objetivo (kg)': p.peso_objetivo || 0,
+      'Peso Real (kg)': p.peso_real,
+      'Diferencia (kg)': p.diferencia,
+      'Estado': p.estado,
+      'Fecha y Hora': new Date(p.fecha_pesaje).toLocaleString('es-CL')
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(datosExcel);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Últimos Pesajes');
+    
+    const nombreArchivo = `Pesajes_${new Date().toISOString().split('T')[0]}_${new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' }).replace(':', '')}.xlsx`;
+    XLSX.writeFile(wb, nombreArchivo);
+    
+    mostrarMensaje('success', '✅ Excel descargado correctamente');
   };
 
   return (
@@ -922,13 +960,13 @@ const PesajeTiempoReal: React.FC = () => {
                       </p>
                       <p className="mb-2">
                         <strong>Diferencia:</strong> 
-                        <span className={Math.abs(diferencia) <= 0.005 ? 'text-success' : 'text-danger'}>
+                        <span className={Math.abs(diferencia) <= toleranciaKg ? 'text-success' : 'text-danger'}>
                           {' '}{diferencia >= 0 ? '+' : ''}{diferencia.toFixed(3)} kg
                         </span>
                       </p>
                       {calcularEstado() === 'OK' && (
                         <span className="badge bg-success fs-6">
-                          ✓ Dentro de tolerancia (±5g)
+                          ✓ Dentro de tolerancia (±{(toleranciaKg * 1000).toFixed(0)}g)
                         </span>
                       )}
                       {calcularEstado() === 'FUERA_RANGO' && (
@@ -1188,10 +1226,19 @@ const PesajeTiempoReal: React.FC = () => {
       <div className="row">
         <div className="col-12">
           <div className="card shadow">
-            <div className="card-header py-3" style={{ backgroundColor: '#F8F9FC', borderBottom: '1px solid #E3E6F0' }}>
+            <div className="card-header py-3 d-flex justify-content-between align-items-center" style={{ backgroundColor: '#F8F9FC', borderBottom: '1px solid #E3E6F0' }}>
               <h6 className="m-0 font-weight-bold" style={{ color: '#8B4513', fontSize: '1rem', fontWeight: 700 }}>
                 Historial de Pesajes (Últimos 10)
               </h6>
+              <button
+                className="btn btn-success btn-sm"
+                onClick={descargarExcelHistorial}
+                disabled={historialPesajes.length === 0}
+                title="Descargar últimos 10 pesajes en Excel"
+              >
+                <Download size={16} className="me-1" />
+                Descargar Excel
+              </button>
             </div>
             <div className="card-body p-0">
               <div className="table-responsive">
