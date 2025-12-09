@@ -209,13 +209,11 @@ const PesajeTiempoReal: React.FC = () => {
     console.log('✅ Reader obtenido, iniciando loop de lectura continua...');
 
     let buffer = '';
-    let lineCount = 0;
 
     // Función recursiva para leer continuamente
     const leerContinuamente = async () => {
       while (leyendoRef.current) {
         try {
-          console.log('⏳ Esperando datos del reader...');
           const { value, done } = await reader.read();
           
           if (done) {
@@ -225,31 +223,25 @@ const PesajeTiempoReal: React.FC = () => {
           }
 
           if (value && value.length > 0) {
-            console.log('📦 Datos crudos recibidos (Uint8Array):', value);
             // Decodificar bytes a texto
             const chunk = decoder.decode(value, { stream: true });
-            console.log('📜 Chunk decodificado:', chunk);
             buffer += chunk;
 
-            // Procesar todas las líneas completas
-            const lines = buffer.split('\n');
-            // Guardar la última línea (incompleta) en el buffer
+            // Procesar todas las líneas completas (separadas por \n o \r\n)
+            const lines = buffer.split(/\r?\n/);
+            // Guardar la última línea (potencialmente incompleta) en el buffer
             buffer = lines.pop() || '';
 
             // Procesar cada línea completa
             for (const line of lines) {
               const trimmedLine = line.trim();
               if (trimmedLine) {
-                lineCount++;
-                console.log(`📨 [${lineCount}] Procesando línea:`, trimmedLine.substring(0, 100));
                 // Llamar a la función de procesamiento usando la ref
                 if (procesarDatoArduinoRef.current) {
                   procesarDatoArduinoRef.current(trimmedLine);
                 }
               }
             }
-          } else {
-            console.log('텅 Valor vacío recibido del reader');
           }
         } catch (readError: any) {
           // Si el error es por cancelación, salir
@@ -286,7 +278,7 @@ const PesajeTiempoReal: React.FC = () => {
         if (readerRef.current) {
           await readerRef.current.cancel();
         }
-      } catch (e) {
+      } catch {
         console.log('⚠️ Error al cancelar reader (esperado si ya estaba cerrado)');
       }
       
@@ -294,7 +286,7 @@ const PesajeTiempoReal: React.FC = () => {
         if (readerRef.current) {
           readerRef.current.releaseLock();
         }
-      } catch (e) {
+      } catch {
         console.log('⚠️ Error al liberar lock (esperado si ya estaba liberado)');
       }
       
