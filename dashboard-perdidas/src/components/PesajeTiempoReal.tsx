@@ -69,6 +69,7 @@ const PesajeTiempoReal: React.FC = () => {
   // Estados para configuración
   const [mostrarConfigObjetivo, setMostrarConfigObjetivo] = useState(false);
   const [nuevoObjetivo, setNuevoObjetivo] = useState('');
+  const [toleranciaKg, setToleranciaKg] = useState(0.005); // 5 gramos por defecto
 
   // Verificar soporte Web Serial API
   const isSerialSupported = 'serial' in navigator;
@@ -561,15 +562,13 @@ const PesajeTiempoReal: React.FC = () => {
     return () => clearInterval(interval);
   }, [connectionStatus, ultimaLectura]);
 
-  // Calcular estado basado en peso objetivo y diferencia (usar tolerancia del Arduino: 0.005 kg = 5g)
+  // Calcular estado basado en peso objetivo y diferencia
   const calcularEstado = () => {
     if (pesoObjetivo <= 0) return 'NORMAL';
     
-    // Tolerancia del Arduino: 0.005 kg (5 gramos)
-    const toleranciaAbsoluta = 0.005;
     const diferenciaAbsoluta = Math.abs(diferencia);
     
-    return diferenciaAbsoluta <= toleranciaAbsoluta ? 'OK' : 'FUERA_RANGO';
+    return diferenciaAbsoluta <= toleranciaKg ? 'OK' : 'FUERA_RANGO';
   };
 
   // Formatear tiempo transcurrido desde última lectura
@@ -595,14 +594,12 @@ const PesajeTiempoReal: React.FC = () => {
     }
 
     const codigoSaco = `${numeroSaco.trim()}`;
-    // Usar la misma tolerancia del Arduino: 0.005 kg (5 gramos)
-    const toleranciaAbsoluta = 0.005;
     
     // Si hay objetivo configurado en Arduino
     let estado = 'OK';
     if (pesoObjetivo > 0) {
       const diferenciaAbsoluta = Math.abs(diferencia);
-      estado = diferenciaAbsoluta <= toleranciaAbsoluta ? 'OK' : 'FUERA_RANGO';
+      estado = diferenciaAbsoluta <= toleranciaKg ? 'OK' : 'FUERA_RANGO';
     }
 
     try {
@@ -1004,6 +1001,30 @@ const PesajeTiempoReal: React.FC = () => {
                       />
                     </div>
 
+                    {/* Configuración de Tolerancia */}
+                    <div className="mb-3">
+                      <label className="form-label small text-muted">
+                        <strong>Tolerancia permitida (kg):</strong>
+                      </label>
+                      <div className="input-group">
+                        <input
+                          type="number"
+                          step="0.001"
+                          min="0"
+                          className="form-control"
+                          value={toleranciaKg}
+                          onChange={(e) => setToleranciaKg(parseFloat(e.target.value) || 0.005)}
+                        />
+                        <span className="input-group-text">kg</span>
+                        <span className="input-group-text text-muted small">
+                          = {(toleranciaKg * 1000).toFixed(0)}g
+                        </span>
+                      </div>
+                      <small className="form-text text-muted">
+                        Diferencia máxima aceptable entre peso objetivo y real
+                      </small>
+                    </div>
+
                     {/* Información del Peso Actual */}
                     <div className={`alert ${datosRecibidos ? 'alert-info' : 'alert-warning'} mb-3`}>
                       <p className="mb-1">
@@ -1017,10 +1038,10 @@ const PesajeTiempoReal: React.FC = () => {
                           <p className="mb-1"><strong>Peso Objetivo:</strong> {pesoObjetivo.toFixed(3)} kg</p>
                           <p className="mb-1">
                             <strong>Diferencia:</strong>{' '}
-                            <span className={Math.abs(diferencia) <= 0.005 ? 'text-success' : 'text-danger'}>
+                            <span className={Math.abs(diferencia) <= toleranciaKg ? 'text-success' : 'text-danger'}>
                               {diferencia >= 0 ? '+' : ''}{diferencia.toFixed(3)} kg
                             </span>
-                            {Math.abs(diferencia) <= 0.005 && (
+                            {Math.abs(diferencia) <= toleranciaKg && (
                               <span className="badge bg-success ms-2">✓ OK</span>
                             )}
                           </p>
